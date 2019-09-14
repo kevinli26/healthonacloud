@@ -23,7 +23,6 @@ class App extends React.Component {
 
   componentDidMount() {
     const {endpoint} = this.state;
-    //Very simply connect to the socket
     let socket = socketIOClient(endpoint);
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
@@ -132,7 +131,7 @@ class App extends React.Component {
           })}
         </ul>
         <form action="">
-          <input id="msg" value={this.state.text} onChange={() => {this.state.textUpdate()}} />
+          <input id="msg" value={this.state.text} onChange={this.textUpdate} />
           <button id="send" onClick={this.send}>Send</button>
         </form>
       </div>)
