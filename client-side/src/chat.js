@@ -232,26 +232,26 @@ class Chat extends React.Component {
             <button id="send" onClick={this.send}>Send</button>
           </form>
 
-          <button onClick={ () => {
-            axios({
-                method: 'post',
-                url: '/endSession',
-                data: {
-                    documents: this.state.messages,
-                }
-            }).then( (res) => {
-                //map the data
-                let temp = res.data.documents;
-                let result = "";
-                temp.map((entry,index) => {
-                    result += entry.keyPhrases;
-                })
-                alert(result);
+//           <button onClick={ () => {
+//             axios({
+//                 method: 'post',
+//                 url: '/endSession',
+//                 data: {
+//                     documents: this.state.messages,
+//                 }
+//             }).then( (res) => {
+//                 //map the data
+//                 let temp = res.data.documents;
+//                 let result = "";
+//                 temp.map((entry,index) => {
+//                     result += entry.keyPhrases;
+//                 })
+//                 alert(result);
 
-            }).catch( (err) => {
-                console.log('An error occured');
-            })
-        }}>end session</button>
+//             }).catch( (err) => {
+//                 console.log('An error occured');
+//             })
+//         }}>end session</button>
         </div>
       </div>)
 
