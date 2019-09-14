@@ -146,28 +146,17 @@ class Chat extends React.Component {
                         position={'left'}
                         type={'text'}
                         text={msg['text']}
-                        data={{
-                            uri: 'https://facebook.github.io/react/img/logo.svg',
-                            status: {
-                                click: false,
-                                loading: 0,
-                            }
-                    }}/>
+                    />
                             
                         :
                     // <li>{msg['source']+" : "+msg['text']} </li>
 
                     <MessageBox
-                    position={'right'}
-                    type={'text'}
-                    text={msg['text']}
-                    data={{
-                        uri: 'https://facebook.github.io/react/img/logo.svg',
-                        status: {
-                            click: false,
-                            loading: 0,
-                        }
-                    }}/>
+                        position={'right'}
+                        type={'text'}
+                        text={msg['text']}
+         
+                    />
             );
 
           })}
