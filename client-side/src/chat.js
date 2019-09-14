@@ -9,7 +9,6 @@ class Chat extends React.Component {
   
   constructor() {
     super();
-    console.log("LOAD");
     this.state = {
       recognizer: null,
       text: "",
@@ -58,6 +57,10 @@ class Chat extends React.Component {
   recognized = (s,e) => {
     let str = e.result.text;
     if (str !== "") {
+      let temp = this.state.messages;
+      let entry = {"source": "l", "text": this.state.text};
+      temp.push(entry)
+      this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
       console.log(str);
     }
@@ -126,7 +129,7 @@ class Chat extends React.Component {
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
         <ul id="messages">
           {this.state.messages.map((msg, index) => {
-            return msg['source'] === "r" ? <li>{msg['source']+msg['text']}</li> : <li>{msg['text']} </li>
+            return msg['source'] === "r" ? <li key={index}>{msg['source']+msg['text']}</li> : <li key={index}>{msg['text']} </li>
           })}
         </ul>
         <form action="">
