@@ -7,7 +7,6 @@ class App extends React.Component {
     return(
       <div>
         <Chat/>
-        <h1>hello world</h1>
       </div>
     );
   }

@@ -47,7 +47,7 @@ class Chat extends React.Component {
     var audioConfig  = sdk.AudioConfig.fromDefaultMicrophoneInput();
     var recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
     
-    recognizer.recognized = this.update
+    recognizer.recognized = this.recognized
     this.setState({
       recognizer: recognizer,
       stopped: false
@@ -55,12 +55,12 @@ class Chat extends React.Component {
     recognizer.startContinuousRecognitionAsync(); 
   }
 
-  update = (s,e) => {
-    var newText = this.state.text + " " + e.result.text;
-    this.setState({
-      text: newText
-    })
-    console.log(e.result.text);
+  recognized = (s,e) => {
+    let str = e.result.text;
+    if (str !== "") {
+      this.state.socket.emit('clientMessage', str);
+      console.log(str);
+    }
   }
 
   stop = (e) => {
