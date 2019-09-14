@@ -39,7 +39,7 @@ class Chat extends React.Component {
   }
 
   record = (e) => {
-    var subscriptionKey = "fc198aafce2a46699ae1745b696e9d9e";
+    var subscriptionKey = "ad626843b6974b23b6f6e44bd288e5f0";
     var serviceRegion = "westus"; // e.g., "westus"
     var speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
     speechConfig.speechRecognitionLanguage = "en-US";
@@ -58,7 +58,7 @@ class Chat extends React.Component {
     let str = e.result.text;
     if (str !== "") {
       let temp = this.state.messages;
-      let entry = {"source": "l", "text": this.state.text};
+      let entry = {"source": "l", "text": str};
       temp.push(entry)
       this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
