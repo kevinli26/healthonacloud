@@ -34,6 +34,9 @@ class Chat extends React.Component {
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
       let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg,  "time": moment().format('LT') };
+      let dataToAnalyze = { "id": 1, "language": "en", "text": msg };
+      this.analyzeSentiment(dataToAnalyze);
+
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -45,61 +48,24 @@ class Chat extends React.Component {
     });
   }
 
-  analyzeSentiment() {
+  analyzeSentiment(data) {
     var url = 'https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/sentiment';
-
-    if (this.state.messages) {
-      axios.post(url, this.state.messages, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Ocp-Apim-Subscription-Key': ''
-        }
-      }).then((response) => {
-        var res = response.documents;
-        for (var prop in res) {
-          var mes = res[prop];
-          var key = "score";
-          this.state.messages[prop][key] = mes.score;
-        }
-
-        console.log(this.state.messages);
-      }).catch((error) => {
-        console.log(error);
-      });
+    var encoded = {
+      documents: [data],
     }
-  }
 
-  analyzeKeyPhrases(data) {
-    var url = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases';
-
-    axios.post(url, data, {
+    axios.post(url, encoded, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Ocp-Apim-Subscription-Key': ''
+        'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a'
       }
     }).then((response) => {
-      
+      var res = response.data.documents[0];
+      console.log("Sentiment score: " + res.score);
     }).catch((error) => {
       console.log(error);
-    });
-  }
-
-  analyzeEntities(data) {
-    var url = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.1/entities';
-
-    axios.post(url, data, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Ocp-Apim-Subscription-Key': ''
-      }
-    }).then((response) => {
-      
-    }).catch((error) => {
-      console.log(error);
-    });
+    })
   }
 
   record = (e) => {
@@ -127,6 +93,9 @@ class Chat extends React.Component {
     if (str !== "") {
       let temp = this.state.messages;
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
+      let dataToAnalyze = { "id": 1, "language": "en", "text": str };
+      this.analyzeSentiment(dataToAnalyze);
+
       temp.push(entry)
       this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
@@ -183,6 +152,9 @@ class Chat extends React.Component {
     if (this.state.text.trim() !== ""){
       let temp = this.state.messages;
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": this.state.text, "time": moment().format('LT')};
+      let dataToAnalyze = { "id": 1, "language": "en", "text": this.state.text };
+      this.analyzeSentiment(dataToAnalyze);
+
       temp.push(entry)
       this.setState({messages: temp, text:""})
       this.state.socket.emit('clientMessage', this.state.text);
