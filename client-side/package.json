@@ -33,6 +33,7 @@
     ]
   },
   "devDependencies": {
+    "axios": "^0.19.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "opentok-react-data-clone": "^0.9.63"

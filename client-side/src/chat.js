@@ -7,8 +7,9 @@ import { throws } from 'assert';
 import 'react-chat-elements/dist/main.css';
 // MessageBox component
 import { MessageBox } from 'react-chat-elements';
-let moment = require('moment');
+import axios from 'axios';
 
+let moment = require('moment');
 var sdk = require("microsoft-cognitiveservices-speech-sdk");
 
 class Chat extends React.Component {
@@ -32,7 +33,7 @@ class Chat extends React.Component {
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
-      let entry = {"source": "received", "text": msg,  "time": moment().format('LT') };
+      let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg,  "time": moment().format('LT') };
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -41,6 +42,63 @@ class Chat extends React.Component {
   textUpdate = (e) => {
     this.setState({
       text: e.target.value
+    });
+  }
+
+  analyzeSentiment() {
+    var url = 'https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/sentiment';
+
+    if (this.state.messages) {
+      axios.post(url, this.state.messages, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Ocp-Apim-Subscription-Key': ''
+        }
+      }).then((response) => {
+        var res = response.documents;
+        for (var prop in res) {
+          var mes = res[prop];
+          var key = "score";
+          this.state.messages[prop][key] = mes.score;
+        }
+
+        console.log(this.state.messages);
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+  }
+
+  analyzeKeyPhrases(data) {
+    var url = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases';
+
+    axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Ocp-Apim-Subscription-Key': ''
+      }
+    }).then((response) => {
+      
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  analyzeEntities(data) {
+    var url = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.1/entities';
+
+    axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Ocp-Apim-Subscription-Key': ''
+      }
+    }).then((response) => {
+      
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
@@ -58,13 +116,17 @@ class Chat extends React.Component {
       stopped: false
     });
     recognizer.startContinuousRecognitionAsync(); 
+
+    // DEBUG
+    console.log(this.state.messages);
+    console.log(this.state.text);
   }
 
   recognized = (s,e) => {
     let str = e.result.text.trim();
     if (str !== "") {
       let temp = this.state.messages;
-      let entry = {"source": "sent", "text": str,  "time": moment().format('LT') };
+      let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
       temp.push(entry)
       this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
@@ -120,7 +182,7 @@ class Chat extends React.Component {
 
     if (this.state.text.trim() !== ""){
       let temp = this.state.messages;
-      let entry = {"source": "sent", "text": this.state.text, "time": moment().format('LT')};
+      let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": this.state.text, "time": moment().format('LT')};
       temp.push(entry)
       this.setState({messages: temp, text:""})
       this.state.socket.emit('clientMessage', this.state.text);
