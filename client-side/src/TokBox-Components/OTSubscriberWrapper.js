@@ -1,5 +1,5 @@
 import React from 'react';
-import { OTSubscriber } from 'opentok-react-data-clone';
+import OTSubscriber from './OTSubscriber';
 import CheckBox from './CheckBox';
 import '../App.css';
 

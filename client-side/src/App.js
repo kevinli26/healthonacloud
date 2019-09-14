@@ -1,6 +1,6 @@
 import React from 'react';
 import Chat from './chat.js';
-import { preloadScript } from 'opentok-react-data-clone';
+import preloadScript from './TokBox-Components/preloadScript';
 import VideoApp from './TokBox-Components/VideoApp';
 
 class App extends React.Component {

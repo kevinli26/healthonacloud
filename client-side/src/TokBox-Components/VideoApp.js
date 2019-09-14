@@ -1,7 +1,10 @@
 import React from 'react';
 import ConnectionStatus from './ConnectionStatus';
 import OTSubscriberWrapper from './OTSubscriberWrapper';
-import { OTPublisher, OTSession, OTStreams, preloadScript } from 'opentok-react-data-clone';
+import OTPublisher from './OTPublisher';
+import OTSession from './OTSession';
+import OTStreams from './OTStreams';
+import preloadScript from './preloadScript';
 import '../App.css';
 
 class VideoApp extends React.Component {
