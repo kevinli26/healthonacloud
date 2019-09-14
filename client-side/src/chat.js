@@ -2,6 +2,11 @@ import React from 'react';
 import './App.css';
 import CanvasDraw from "react-canvas-draw";
 import socketIOClient from "socket.io-client";
+import { throws } from 'assert';
+// RCE CSS
+import 'react-chat-elements/dist/main.css';
+// MessageBox component
+import { MessageBox } from 'react-chat-elements';
 
 var sdk = require("microsoft-cognitiveservices-speech-sdk");
 
@@ -16,7 +21,7 @@ class Chat extends React.Component {
       response: 0,
       endpoint: "http://127.0.0.1:4001",
       socket: null,
-      messages: []
+      messages: [],
     }
   }
 
@@ -26,7 +31,7 @@ class Chat extends React.Component {
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
-      let entry = {"source": "r", "text": msg};
+      let entry = {"source": "received", "text": msg};
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -112,15 +117,17 @@ class Chat extends React.Component {
   send = (e) => {
     e.preventDefault();
     let temp = this.state.messages;
-    let entry = {"source": "l", "text": this.state.text};
+    let entry = {"source": "sent", "text": this.state.text};
     temp.push(entry)
-    this.setState({messages: temp})
+    this.setState({messages: temp, text:""})
     this.state.socket.emit('clientMessage', this.state.text);
   }
 
   render() {
     return (
       <div className="App">
+
+
         <header className="App-header">
           {/* <CanvasDraw ref={canvasDraw => (this.saveableCanvas = canvasDraw)} brushRadius={1}/>
           <button onClick={() => {this.interpret()}}>SAVE</button> */}
@@ -129,7 +136,40 @@ class Chat extends React.Component {
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
         <ul id="messages">
           {this.state.messages.map((msg, index) => {
-            return msg['source'] === "r" ? <li key={index}>{msg['source']+msg['text']}</li> : <li key={index}>{msg['text']} </li>
+
+            return (
+                msg['source'] === "received" ? 
+                    // <li>{msg['source']+ " : "+msg['text']}</li>
+
+                    //message I received
+                    <MessageBox
+                        position={'left'}
+                        type={'text'}
+                        text={msg['text']}
+                        data={{
+                            uri: 'https://facebook.github.io/react/img/logo.svg',
+                            status: {
+                                click: false,
+                                loading: 0,
+                            }
+                    }}/>
+                            
+                        :
+                    // <li>{msg['source']+" : "+msg['text']} </li>
+
+                    <MessageBox
+                    position={'right'}
+                    type={'text'}
+                    text={msg['text']}
+                    data={{
+                        uri: 'https://facebook.github.io/react/img/logo.svg',
+                        status: {
+                            click: false,
+                            loading: 0,
+                        }
+                    }}/>
+            );
+
           })}
         </ul>
         <form action="">
