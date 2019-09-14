@@ -203,37 +203,43 @@ class Chat extends React.Component {
                 );
               })}
           </ul>
+
           <div class="input-group mb-3 input">
             <input type="text" id="msg" className="form-control" value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
             <div class="input-group-append">
               <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
             </div>
           </div>
+          <button onClick={ () => {
+            axios({
+              method: "POST",
+              url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
+              },
+              data: {documents: this.state.messages},
+            }).then( (apiRes) => {
+                let temp = apiRes.data.documents;
+                let summarized = [];
+                temp.map( entry => {
+                  entry = entry.keyPhrases;
+                  summarized.push(entry);
+                });
+                console.log(summarized);
+    
+            }).catch( (err)=> {
+                console.log(err);
+                console.log('An error has occurred')
+            });
+        }}>End Session</button>
+
         </div>
 
         <br />
         <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
-        {/* <button onClick={ () => {
-            axios({
-                method: 'post',
-                url: '/endSession',
-                data: {
-                    documents: this.state.messages,
-                }
-            }).then( (res) => {
-                //map the data
-                let temp = res.data.documents;
-                let result = "";
-                temp.map((entry,index) => {
-                    result += entry.keyPhrases;
-                })
-                alert(result);
-
-            }).catch( (err) => {
-                console.log('An error occured');
-            })
-        }}>end session</button> */}
       </div>)
 
   }
