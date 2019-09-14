@@ -60,7 +60,7 @@ class Chat extends React.Component {
   }
 
   recognized = (s,e) => {
-    let str = e.result.text;
+    let str = e.result.text.trim();
     if (str !== "") {
       let temp = this.state.messages;
       let entry = {"source": "l", "text": str};
@@ -116,11 +116,13 @@ class Chat extends React.Component {
 
   send = (e) => {
     e.preventDefault();
-    let temp = this.state.messages;
-    let entry = {"source": "sent", "text": this.state.text, "time": "foo"};
-    temp.push(entry)
-    this.setState({messages: temp, text:""})
-    this.state.socket.emit('clientMessage', this.state.text);
+    if (this.state.text.trim() !== ""){
+      let temp = this.state.messages;
+      let entry = {"source": "sent", "text": this.state.text, "time": "foo"};
+      temp.push(entry)
+      this.setState({messages: temp, text:""})
+      this.state.socket.emit('clientMessage', this.state.text);
+    }
   }
 
   render() {
