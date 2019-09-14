@@ -7,7 +7,6 @@ const axios = require('axios');
 
 //Port from environment variable or default - 4001
 const port = process.env.PORT || 4001;
-// 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
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 
@@ -17,19 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", (req,res) => {
 	res.send("Root Endpoint. Only use as a RESTful api.")
 })
-
-// app.post("/sendEmail", (req,res) => {
-// 	const sgMail = require('@sendgrid/mail');
-// 	sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// 	const msg = {
-// 	  to: 'kevinli1226@example.com',
-// 	  from: 'test@example.com',
-// 	  subject: 'Sending with Twilio SendGrid is Fun',
-// 	  text: 'and easy to do anywhere, even with Node.js',
-// 	  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-// 	};
-// 	sgMail.send(msg);
-// })
 
 app.post("/endSession", (req,res) => {
 	//call azure API to summarize
