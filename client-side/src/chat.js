@@ -174,42 +174,45 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div className="container chat">
-        <div className="chatbox">
-          <ul id="messages">
-              {this.state.messages.map((msg, index) => {
-                return (
-                    msg['source'] === "received" ? 
-                        // <li>{msg['source']+ " : "+msg['text']}</li>
-                        //message I received
-                        <MessageBox
-                            position={'left'}
-                            type={'text'}
-                            text={msg['source'] + " : " + msg['text']}
-                            dateString={
-                                msg['time']
-                            }
-                        />
-                            :
-                        // <li>{msg['source']+" : "+msg['text']} </li>
-                        <MessageBox
-                            position={'right'}
-                            type={'text'}
-                            text={msg['source'] + " : " +msg['text']}
-                            dateString={
-                                msg['time']
-                            }
-                        />  
-                );
-              })}
-          </ul>
-
-          <div class="input-group mb-3 input">
-            <input type="text" id="msg" className="form-control" value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
-            <div class="input-group-append">
-              <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
+      <div>
+        <div className="chat">
+            <div className="msgs">
+              <ul id="messages">
+                  {this.state.messages.map((msg, index) => {
+                    return (
+                        msg['source'] === "received" ? 
+                            // <li>{msg['source']+ " : "+msg['text']}</li>
+                            //message I received
+                            <MessageBox
+                                position={'left'}
+                                type={'text'}
+                                text={msg['source'] + " : " + msg['text']}
+                                dateString={
+                                    msg['time']
+                                }
+                            />
+                                :
+                            // <li>{msg['source']+" : "+msg['text']} </li>
+                            <MessageBox
+                                position={'right'}
+                                type={'text'}
+                                text={msg['source'] + " : " +msg['text']}
+                                dateString={
+                                    msg['time']
+                                }
+                            />  
+                    );
+                  })}
+              </ul>
             </div>
-          </div>
+            <div class="input-group mb-3 input">
+              <input type="text" id="msg" className="form-control" value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
+              <div class="input-group-append">
+                <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
+              </div>
+            </div>
+        </div>
+        <div>
           <button onClick={ () => {
             axios({
               method: "POST",
@@ -228,18 +231,17 @@ class Chat extends React.Component {
                   summarized.push(entry);
                 });
                 console.log(summarized);
-    
+
             }).catch( (err)=> {
                 console.log(err);
                 console.log('An error has occurred')
             });
-        }}>End Session</button>
+          }}>End Session</button>
 
+          <br />
+          <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
+          <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
         </div>
-
-        <br />
-        <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
-        <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
       </div>)
 
   }

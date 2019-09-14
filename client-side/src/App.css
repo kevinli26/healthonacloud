@@ -7,17 +7,22 @@
   max-width: 100%;
 }
 
-.chatbox {
-  width: 100%;
-  max-height: "500px";
-}
-
-.left {
-  border-right: 1px solid black;
+.chat {
+  height: 500px;
+  position: relative;
 }
 
 .input {
-  bottom:0;
+  position: absolute;
+  bottom: 0px;
+}
+
+.msgs {
+  height: 85%;
+}
+
+.left-section-interior {
+  padding-right: 1rem; 
 }
 
 #messages {
