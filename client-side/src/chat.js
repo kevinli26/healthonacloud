@@ -7,6 +7,7 @@ import { throws } from 'assert';
 import 'react-chat-elements/dist/main.css';
 // MessageBox component
 import { MessageBox } from 'react-chat-elements';
+let moment = require('moment');
 
 var sdk = require("microsoft-cognitiveservices-speech-sdk");
 
@@ -31,7 +32,7 @@ class Chat extends React.Component {
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
-      let entry = {"source": "received", "text": msg,  "time": "received foo"};
+      let entry = {"source": "received", "text": msg,  "time": moment().format('LT') };
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -117,7 +118,7 @@ class Chat extends React.Component {
   send = (e) => {
     e.preventDefault();
     let temp = this.state.messages;
-    let entry = {"source": "sent", "text": this.state.text, "time": "foo"};
+    let entry = {"source": "sent", "text": this.state.text, "time": moment().format('LT')  };
     temp.push(entry)
     this.setState({messages: temp, text:""})
     this.state.socket.emit('clientMessage', this.state.text);
@@ -146,8 +147,9 @@ class Chat extends React.Component {
                         position={'left'}
                         type={'text'}
                         text={msg['source'] + " : " + msg['text']}
-                        date={msg['date']}
-                        dateString={msg['date']}
+                        dateString={
+                            msg['time']
+                        }
                     />
                             
                         :
@@ -157,8 +159,9 @@ class Chat extends React.Component {
                         position={'right'}
                         type={'text'}
                         text={msg['source'] + " : " +msg['text']}
-                        date={msg['date']}
-                        dateString={msg['date']}
+                        dateString={
+                            msg['time']
+                        }
                     />
             );
 
