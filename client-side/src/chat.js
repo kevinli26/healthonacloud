@@ -64,7 +64,7 @@ class Chat extends React.Component {
     let str = e.result.text.trim();
     if (str !== "") {
       let temp = this.state.messages;
-      let entry = {"source": "l", "text": str};
+      let entry = {"source": "sent", "text": str,  "time": moment().format('LT') };
       temp.push(entry)
       this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
