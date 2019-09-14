@@ -2,20 +2,14 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const socketServer = require('socket.io')(http);
-const bodyParser = require('body-parser');
-const axios = require('axios');
+// const bodyParser = require('body-parser');
+// const axios = require('axios');
 
-//Port from environment variable or default - 4001
-const port = process.env.PORT || 4001;
+
 // support parsing of application/json type post data
 // app.use(bodyParser.json());
 // //support parsing of application/x-www-form-urlencoded post data
 // app.use(bodyParser.urlencoded({ extended: true }));
-
-app.get("/", (req,res) => {
-	res.send("Root Endpoint. Only use as a RESTful api.")
-})
-
 
 // app.post("/endSession", (req,res) => {
 // 	//call azure API to summarize
@@ -36,6 +30,13 @@ app.get("/", (req,res) => {
 // 		res.send("ended request life cycle");
 // 	})
 // })
+
+
+//Port from environment variable or default - 4001
+const port = process.env.PORT || 4001;
+app.get("/", (req,res) => {
+	res.send("Root Endpoint. Only use as a RESTful api.")
+})
 
 //Setting up a socket with the namespace "connection" for new sockets
 socketServer.on('connection', (socket) => {
