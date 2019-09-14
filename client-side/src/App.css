@@ -170,13 +170,11 @@ form button { width: 10%; background: rgb(130, 224, 255); border: none; padding:
     resize:none;
 }
 
-<<<<<<< HEAD
   .chatting{
     height: 50px;
   }
  */
-=======
-.subscriber-form input[type=submit],
+/* .subscriber-form input[type=submit],
 .subscriber-form input[type=button] {
     background: #2471FF;
     border: none;
@@ -199,5 +197,4 @@ form button { width: 10%; background: rgb(130, 224, 255); border: none; padding:
 .chatting{
   height: 50px;
 }
-
->>>>>>> 642568de33a879cd482d4d3c27f488af9439ba61
+ */
