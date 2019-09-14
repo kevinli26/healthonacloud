@@ -268,8 +268,10 @@ class Chat extends React.Component {
                     summarized.push(entry);
                   });
                   console.log(summarized);
+                  this.setState({summary:summarized});
 
               }).catch( (err)=> {
+                  this.setState({summary:'none'});
                   console.log(err);
                   console.log('An error has occurred')
               });
