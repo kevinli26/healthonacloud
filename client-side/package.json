@@ -2,6 +2,7 @@
   "name": "test",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:4001",
   "dependencies": {
     "microsoft-cognitiveservices-speech-sdk": "^1.6.0",
     "react": "^16.9.0",

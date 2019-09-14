@@ -195,6 +195,7 @@ class Chat extends React.Component {
       <div className="container chat">
         <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
+
         <br/>
         <div className="chatbox">
           <ul id="messages">
@@ -228,8 +229,30 @@ class Chat extends React.Component {
             <input id="msg" value={this.state.text} onChange={this.textUpdate} />
             <button id="send" onClick={this.send}>Send</button>
           </form>
+
+          <button onClick={ () => {
+            axios({
+                method: 'post',
+                url: '/endSession',
+                data: {
+                    documents: this.state.messages,
+                }
+            }).then( (res) => {
+                //map the data
+                let temp = res.data.documents;
+                let result = "";
+                temp.map((entry,index) => {
+                    result += entry.keyPhrases;
+                })
+                alert(result);
+
+            }).catch( (err) => {
+                console.log('An error occured');
+            })
+        }}>end session</button>
         </div>
       </div>)
+
   }
 }
 
