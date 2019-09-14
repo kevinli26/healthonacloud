@@ -20,7 +20,7 @@ class Chat extends React.Component {
       text: "",
       stopped: true,
       response: 0,
-      endpoint: "http://127.0.0.1:4001",
+      endpoint: "https://mysterious-savannah-03972.herokuapp.com/",
       socket: null,
       messages: [],
     }
