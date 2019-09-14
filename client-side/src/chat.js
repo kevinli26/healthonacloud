@@ -207,7 +207,8 @@ class Chat extends React.Component {
                       <MessageBox
                           position={'left'}
                           type={'text'}
-                          text={msg['source'] + " : " + msg['text']}
+                        //  text={msg['source'] + " : " + msg['text']}
+                          text={msg['text']} // get rid of sent and receive
                           dateString={
                               msg['time']
                           }
@@ -217,7 +218,8 @@ class Chat extends React.Component {
                       <MessageBox
                           position={'right'}
                           type={'text'}
-                          text={msg['source'] + " : " +msg['text']}
+                      //    text={msg['source'] + " : " +msg['text']}
+                          text={msg['text']}// get rid of sent and receive
                           dateString={
                               msg['time']
                           }
