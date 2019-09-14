@@ -57,9 +57,12 @@
             recognizer.startContinuousRecognitionAsync();
       
             recognizer.recognized = function(s, e){
-              window.console.log(e.result.text);
-              $('#messages').append($('<li style="background-color:blue; color: white; text-align:right;">').text(e.result.text));
-              socket.emit('clientMessage', e.result.text);
+              var msg = e.result.text.trim();
+              if (msg !== ""){
+                window.console.log(e.result.text);
+                $('#messages').append($('<li style="background-color:blue; color: white; text-align:right;">').text(e.result.text));
+                socket.emit('clientMessage', e.result.text);
+              }
             }
           });
         });
