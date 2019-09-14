@@ -9,6 +9,10 @@ app.get('/', (req,res) => {
 	res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/js/speech.js',function(req,res){
+    res.sendFile(__dirname + '/js/speech.js'); 
+});
+
 //listens for incoming sockets to the main server
 //will send directly to the sender
 socketServer.on('connection', (socket) => {
