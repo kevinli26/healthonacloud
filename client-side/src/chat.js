@@ -31,7 +31,7 @@ class Chat extends React.Component {
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
-      let entry = {"source": "received", "text": msg};
+      let entry = {"source": "received", "text": msg,  "time": "received foo"};
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -117,7 +117,7 @@ class Chat extends React.Component {
   send = (e) => {
     e.preventDefault();
     let temp = this.state.messages;
-    let entry = {"source": "sent", "text": this.state.text};
+    let entry = {"source": "sent", "text": this.state.text, "time": "foo"};
     temp.push(entry)
     this.setState({messages: temp, text:""})
     this.state.socket.emit('clientMessage', this.state.text);
@@ -145,7 +145,9 @@ class Chat extends React.Component {
                     <MessageBox
                         position={'left'}
                         type={'text'}
-                        text={msg['text']}
+                        text={msg['source'] + " : " + msg['text']}
+                        date={msg['date']}
+                        dateString={msg['date']}
                     />
                             
                         :
@@ -154,8 +156,9 @@ class Chat extends React.Component {
                     <MessageBox
                         position={'right'}
                         type={'text'}
-                        text={msg['text']}
-         
+                        text={msg['source'] + " : " +msg['text']}
+                        date={msg['date']}
+                        dateString={msg['date']}
                     />
             );
 
