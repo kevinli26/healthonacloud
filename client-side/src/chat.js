@@ -130,51 +130,43 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div className="App">
-
-
-        <header className="App-header">
-          {/* <CanvasDraw ref={canvasDraw => (this.saveableCanvas = canvasDraw)} brushRadius={1}/>
-          <button onClick={() => {this.interpret()}}>SAVE</button> */}
-        </header>
+      <div className="container chat">
         <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
-        <ul id="messages">
-          {this.state.messages.map((msg, index) => {
-
-            return (
-                msg['source'] === "received" ? 
-                    // <li>{msg['source']+ " : "+msg['text']}</li>
-
-                    //message I received
-                    <MessageBox
-                        position={'left'}
-                        type={'text'}
-                        text={msg['source'] + " : " + msg['text']}
-                        dateString={
-                            msg['time']
-                        }
-                    />
-                            
-                        :
-                    // <li>{msg['source']+" : "+msg['text']} </li>
-
-                    <MessageBox
-                        position={'right'}
-                        type={'text'}
-                        text={msg['source'] + " : " +msg['text']}
-                        dateString={
-                            msg['time']
-                        }
-                    />
-            );
-
-          })}
-        </ul>
-        <form action="">
-          <input id="msg" value={this.state.text} onChange={this.textUpdate} />
-          <button id="send" onClick={this.send}>Send</button>
-        </form>
+        <br/>
+        <div className="chatbox">
+          <ul id="messages">
+            {this.state.messages.map((msg, index) => {
+              return (
+                  msg['source'] === "received" ? 
+                      // <li>{msg['source']+ " : "+msg['text']}</li>
+                      //message I received
+                      <MessageBox
+                          position={'left'}
+                          type={'text'}
+                          text={msg['source'] + " : " + msg['text']}
+                          dateString={
+                              msg['time']
+                          }
+                      />
+                          :
+                      // <li>{msg['source']+" : "+msg['text']} </li>
+                      <MessageBox
+                          position={'right'}
+                          type={'text'}
+                          text={msg['source'] + " : " +msg['text']}
+                          dateString={
+                              msg['time']
+                          }
+                      />  
+              );
+            })}
+          </ul>
+          <form action="">
+            <input id="msg" value={this.state.text} onChange={this.textUpdate} />
+            <button id="send" onClick={this.send}>Send</button>
+          </form>
+        </div>
       </div>)
   }
 }
