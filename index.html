@@ -20,7 +20,7 @@
     </form>
 
     <!-- socket.io client cdn -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <!-- jquery cdn -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <!-- The client side only works with socket, which is unique per client connection.-->
@@ -32,7 +32,7 @@
           e.preventDefault(); //prevent the default behavior of forms reloading
           socket.emit('clientMessage', $('#msg').val());
           
-          $('#messages').append($('<li style="color:red;">').text($('#msg').val()));
+          $('#messages').append($('<li style="background-color:blue; color: white; text-align:right;">').text($('#msg').val()));
           $('#msg').val('');
           return false;
         });
