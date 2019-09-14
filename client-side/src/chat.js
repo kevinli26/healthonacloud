@@ -24,7 +24,11 @@ class Chat extends React.Component {
       endpoint: "https://mysterious-savannah-03972.herokuapp.com/",
       socket: null,
       messages: [],
+      endSession: false,
+      summary: null,
+      sentiment: null,
     }
+    this.endChat = this.endChat.bind(this);
   }
 
   componentDidMount() {
@@ -36,7 +40,6 @@ class Chat extends React.Component {
       let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg,  "time": moment().format('LT') };
       let dataToAnalyze = { "id": 1, "language": "en", "text": msg };
       this.analyzeSentiment(dataToAnalyze);
-
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -172,34 +175,65 @@ class Chat extends React.Component {
     }
   }
 
+  endChat(){
+    axios({
+      method: "POST",
+      url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
+      },
+      data: {documents: this.state.messages},
+    }).then( (apiRes) => {
+        let temp = apiRes.data.documents;
+        let summarized = [];
+        temp.map( entry => {
+          entry = entry.keyPhrases;
+          summarized.push(entry);
+        });
+        this.setState({summary: summarized})
+    }).catch( (err)=> {
+        console.log(err);
+        console.log('An error has occurred')
+        this.setState({summary: "nothing"})
+    });
+  
+  }
+
   render() {
     return (
-      <div className="container chat">
+      this.state.summary != null ? (
+        <div>
+          <h1>ENDED</h1>
+          <p>{this.state.summary}</p>
+        </div>
+
+      ) : (
+        <div className="container chat">
         <div className="chatbox">
           <ul id="messages">
               {this.state.messages.map((msg, index) => {
                 return (
                     msg['source'] === "received" ? 
-                        // <li>{msg['source']+ " : "+msg['text']}</li>
-                        //message I received
-                        <MessageBox
-                            position={'left'}
-                            type={'text'}
-                            text={msg['source'] + " : " + msg['text']}
-                            dateString={
-                                msg['time']
-                            }
-                        />
-                            :
-                        // <li>{msg['source']+" : "+msg['text']} </li>
-                        <MessageBox
-                            position={'right'}
-                            type={'text'}
-                            text={msg['source'] + " : " +msg['text']}
-                            dateString={
-                                msg['time']
-                            }
-                        />  
+                      //received message
+                      <MessageBox
+                          position={'left'}
+                          type={'text'}
+                          text={msg['source'] + " : " + msg['text']}
+                          dateString={
+                              msg['time']
+                          }
+                      />
+                          :
+                      <MessageBox
+                          position={'right'}
+                          type={'text'}
+                          text={msg['source'] + " : " +msg['text']}
+                          dateString={
+                              msg['time']
+                          }
+                      />  
                 );
               })}
           </ul>
@@ -210,38 +244,16 @@ class Chat extends React.Component {
               <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
             </div>
           </div>
-          <button onClick={ () => {
-            axios({
-              method: "POST",
-              url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
-              },
-              data: {documents: this.state.messages},
-            }).then( (apiRes) => {
-                let temp = apiRes.data.documents;
-                let summarized = [];
-                temp.map( entry => {
-                  entry = entry.keyPhrases;
-                  summarized.push(entry);
-                });
-                console.log(summarized);
-    
-            }).catch( (err)=> {
-                console.log(err);
-                console.log('An error has occurred')
-            });
-        }}>End Session</button>
+
+          <button onClick={this.endChat}>End Session</button>
 
         </div>
-
-        <br />
+        <br/>
         <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
         <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
-      </div>)
-
+      </div>
+      )
+    )
   }
 }
 
