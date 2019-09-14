@@ -9,7 +9,7 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="row">
-          <div className="col">
+          <div className="col left">
             <Chat/>
           </div>
           <div className="col">

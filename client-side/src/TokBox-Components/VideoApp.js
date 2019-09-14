@@ -61,53 +61,29 @@ class VideoApp extends React.Component {
         event.preventDefault();
     }
 
+    style = {
+        'width': "100%",
+        'height': "500px"
+    }
+
     render() {
         return (
-            <view>
-                {this.state.connected && this.state.api_key && this.state.session_id && this.state.token? 
-                    <OTSession
+            <div>
+                <OTSession
                         apiKey={this.state.api_key}
                         sessionId={this.state.session_id}
                         token={this.state.token}
                         eventHandlers={this.sessionEvents}
                         onError={this.onError}
-                        >
-            
-                        {this.state.error ? <div id="error">{this.state.error}</div> : null}
-            
-                        <ConnectionStatus connected={this.state.connected} />    
-
-                        <OTPublisher />    
-            
+                        > 
+                        <OTPublisher properties={this.style}/>    
                         <OTStreams>
                             <OTSubscriberWrapper />
                         </OTStreams>
-
-                    </OTSession>
-                    : <form className="subscriber-form" onSubmit={this.handleSubmit}>
-                    <h1>TokBox React Demo</h1>
-                    <ul>
-                        <li>
-                            <label for="api_key">API Key</label>
-                            <input name="api_key" type="text" value={this.state.api_key} onChange={this.setAPIKey} />
-                            <span>Enter a valid TokBox API Key</span>
-                        </li>
-                        <li>
-                            <label for="session_Id">Session ID</label>
-                            <input name="session_Id" type="text" value={this.state.session_id} onChange={this.setSessionId} />
-                            <span>Enter a valid Session ID for your TokBox Session</span>
-                        </li>
-                        <li>
-                            <label for="token">Token</label>
-                            <input name="token" type="text" value={this.state.token} onChange={this.setToken} />
-                            <span>Enter a valid Token for your TokBox Session</span>
-                        </li>
-                        <li>
-                            <input type="submit" value="submit" />
-                        </li>
-                    </ul>
-                 </form>}
-            </view>
+                        {this.state.error ? <div id="error">{this.state.error}</div> : null}  
+                        <ConnectionStatus connected={this.state.connected} /> 
+                </OTSession>
+            </div>
         );
     }
 }
