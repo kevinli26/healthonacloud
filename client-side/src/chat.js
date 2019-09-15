@@ -281,20 +281,28 @@ class Chat extends React.Component {
   render() {
     return (
       this.state.channel === "" ? (
-          <div align="center" style={{"justifyContent": "center", "alignItems": "center"}}>
-            <h1 className="display-4 center">What kind of health services would you like today?</h1>
-            <div className="form-group">
-              <select className="form-control" value={this.state.name} onChange={this.nameUpdate}>
-                <option>Family Medicine</option>
-                <option>Physiotherapy</option>
-                <option>Psychology</option>
-                <option>Dermatology</option>
-                <option>Allergy and Immunology</option>
-              </select>
-            </div>
+        <div style={{margin:"30px"}}>
+            <div align="center" style={{"justifyContent": "center", "alignItems": "center"}}>
+            <h1 className="display-4 center">Please select a Medical Service Channel to get started.</h1>
+            <small>Channel selection will automatically match you with health care professionals specializing in that dedicated area.</small>
             <br/>
-            <button className="btn btn-primary" onClick={ () => {this.props.setChannel(this.state.name); this.setState({channel: this.state.name})}}>Submit</button>
+            <div style={{marginTop: "15px"}}>
+              <div className="form-group">
+                <select className="form-control" value={this.state.name} onChange={this.nameUpdate}>
+                  <option>Family Medicine</option>
+                  <option>Physiotherapy</option>
+                  <option>Psychology</option>
+                  <option>Dermatology</option>
+                  <option>Allergy and Immunology</option>
+                </select>
+              </div>
+              <br/>
+              <button className="btn btn-primary" onClick={ () => {this.props.setChannel(this.state.name); this.setState({channel: this.state.name})}}>Submit</button>
+            </div>
+           
           </div>       
+        </div>
+          
       ) : (
       <div>     
         {this.state.summary != null && this.state.sentiment != null ? (
@@ -338,7 +346,7 @@ class Chat extends React.Component {
               </div>
               <div className="msgs">
                 <ul id="messages">
-                    {this.state.stopped ? <h4 style={{textAlign: "right"}}>Start a conversation with a doctor to get started!</h4> : <div>
+                    {this.state.stopped ? <h4 style={{textAlign: "right"}}>Start a conversation with a doctor to begin!</h4> : <div>
                     {this.state.messages.map((msg, index) => {
                       return (
                           msg['source'] === "received" ? 
