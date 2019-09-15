@@ -87,7 +87,7 @@ class VideoApp extends React.Component {
                                 </div>
                                 <div className="col-6">
                                     <OTStreams>
-                                        <OTSubscriberWrapper />
+                                        <OTSubscriberWrapper role={this.props.role} />
                                     </OTStreams>
                                 </div>
                             </div>

@@ -74,7 +74,7 @@ class App extends React.Component {
   render(){
     return(
       <div className="container">
-        {/* <Modal
+        <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
           style={this.customStyles}
@@ -82,17 +82,17 @@ class App extends React.Component {
           shouldCloseOnOverlayClick={false}
         >
           <div className='row'>
-            <label className="col-3">Username:</label>
-            <input className="col-9" value={this.state.un} onChange={(e) => {this.setState({un: e.target.value})}}></input>
+            <label className="col-4">Username:</label>
+            <input className="col-8" value={this.state.un} onChange={(e) => {this.setState({un: e.target.value})}}></input>
           </div>
           <div className='row'>
-            <label className="col-3">Password:</label>
-            <input className="col-9" type="password" value={this.state.pw} onChange={(e) => {this.setState({pw: e.target.value})}}></input>
+            <label className="col-4">Password:</label>
+            <input className="col-8" type="password" value={this.state.pw} onChange={(e) => {this.setState({pw: e.target.value})}}></input>
           </div>
           <br />
           <p>{this.state.error}</p>
           <button className="btn btn-secondary" onClick={this.login}>Log In</button>
-        </Modal> */}
+        </Modal>
         <div className="row">
           <div className="col" >
             <Chat
@@ -110,6 +110,7 @@ class App extends React.Component {
                 api_key={this.props.apiKey}
                 session_id={this.props.sessionId}
                 token={this.props.token}
+                role={this.state.role}
               /> : null }
             </div>: null}
         </div>
