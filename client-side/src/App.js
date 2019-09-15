@@ -2,6 +2,8 @@ import React from 'react';
 import Chat from './chat.js';
 import preloadScript from './TokBox-Components/preloadScript';
 import VideoApp from './TokBox-Components/VideoApp';
+import Modal from 'react-modal';
+import { runInThisContext } from 'vm';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,7 +11,12 @@ class App extends React.Component {
 
     this.state = {
       started: false,
-      channel: ""
+      channel: "",
+      modalIsOpen: true,
+      un: "",
+      pw: "",
+      error: "",
+      role: null
     }
     this.setChannel = this.setChannel.bind(this);
     this.startSession = this.startSession.bind(this);
@@ -30,10 +37,48 @@ class App extends React.Component {
     console.log("Session Ended!")
     this.setState({ started: false });
   }
+
+  openModal = (e) => {
+    this.setState({modalIsOpen: true});
+  }
+ 
+  closeModal = (e) => {
+    this.setState({modalIsOpen: false});
+  }
+
+  login = (e) => {
+    if (this.state.un === "franwu@gmail.com" && this.state.pw === "password"){
+      this.setState({role: "patient", modalIsOpen: false});
+    } else if (this.state.un === "kevli@gmail.com" && this.state.pw === "password"){
+      this.setState({role: "patient", modalIsOpen: false});
+    } else if (this.state.un === "billliu@gmail.com" && this.state.pw === "password"){
+      this.setState({role: "doctor", modalIsOpen: false});
+    } else if (this.state.un === "mtan@gmail.com" && this.state.pw === "password"){
+      this.setState({role: "doctor", modalIsOpen: false});
+    } else {
+      this.setState({error: "Wrong username or password."});
+    }
+  }
   
   render(){
     return(
       <div className="container">
+        {/* <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          contentLabel="Log in Modal"
+        >
+          <div className='row'>
+            <label className="col-3">Username:</label>
+            <input className="col-9" value={this.state.un} onChange={(e) => {this.setState({un: e.target.value})}}></input>
+          </div>
+          <div className='row'>
+            <label className="col-3">Password:</label>
+            <input className="col-9" value={this.state.pw} onChange={(e) => {this.setState({pw: e.target.value})}}></input>
+          </div>
+          <label value={this.state.error}></label>
+          <button onClick={this.login}>Log In</button>
+        </Modal> */}
         <div className="row">
           <div className="col" >
             <Chat

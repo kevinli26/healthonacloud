@@ -13,16 +13,16 @@ export default function OTStreams(props, context) {
   const child = Children.only(props.children);
 
   const childrenWithContextWrapper = Array.isArray(streams)
-    // ? streams.map(stream => (child
-    //   ? <OTSubscriberContext stream={stream} key={stream.id} >
-    //     { child }
-    //   </OTSubscriberContext>
-    //   : child))
-    ? <div>{child
-      ? <OTSubscriberContext stream={streams[0]} key={streams[0].id} >
+    ? streams.map(stream => (child
+      ? <OTSubscriberContext stream={stream} key={stream.id} >
         { child }
       </OTSubscriberContext>
-      : child }</div>
+      : child))
+    // ? <div>{child
+    //   ? <OTSubscriberContext stream={streams[0]} key={streams[0].id} >
+    //     { child }
+    //   </OTSubscriberContext>
+    //   : child }</div>
     : null;
 
   return <div>{childrenWithContextWrapper}</div>;

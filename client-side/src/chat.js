@@ -206,8 +206,8 @@ class Chat extends React.Component {
   }
   calcAverage(sentiment){
     if (sentiment && sentiment.length){
-      sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
-      avgSentiment = sumSentiment / sentiment.length;
+      let sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
+      let avgSentiment = sumSentiment / sentiment.length;
     }
   }
   endChat(){
@@ -265,13 +265,6 @@ class Chat extends React.Component {
 
   }
 
-  calcAverage(sentiment){
-    if (sentiment && sentiment.length){
-      sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
-      avgSentiment = sumSentiment / sentiment.length;
-    }
-  }
-
   back = (e) => {
     this.setState({
       channel: ""
@@ -301,7 +294,7 @@ class Chat extends React.Component {
             <h1>ENDED</h1>
             <ul>
             {this.state.summary.map( x => {
-              if(x.length > 1) {
+              if(x.length > 1 && x !== 'none') {
               x.map( y => {
                   if(y != 0){
                     return (<li>{y}</li>);
