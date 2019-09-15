@@ -11,13 +11,13 @@
 To tackle this issue, we have launched Health In A Cloud: A web app that leverages the powerful ML capabilities of Azure's Coginitive services to bring immediate verbal care to even the most remote locations of Canada. With patients allowed to remain anonymous and instant pairing between health specialists and patients, one can get all the basic health 
 
 ## Implemented with: ##
-    * Socket.IO for bi-directional chat (latency of < 500ms)
-    * TokBox Framework for WebRTC implementation
-    * React.js for client side
-    * Express.js for RESTapi
-    * Azure Cognitive Services used for Natural Language Processing and Facial Recognition & Analysis
-    * Deployed on Heroku
+    - Socket.IO for bi-directional chat (latency of < 500ms)
+    - TokBox Framework for WebRTC implementation
+    - React.js for client side
+    - Express.js for RESTapi
+    - Azure Cognitive Services used for Natural Language Processing and Facial Recognition & Analysis
+    - Deployed on Heroku
 
 ## Project Structure ##
-    * Client-side/ --> Client sockets 
-    * Heroku (on Heroku Branch) --> WebServer with request end points
+    - Client-side/ --> Client sockets 
+    - Heroku (on Heroku Branch) --> WebServer with request end points
