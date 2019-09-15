@@ -22,6 +22,10 @@
   margin-bottom: 2rem
 }
 
+.button-left-space{
+  margin-left: 1em
+}
+
 .msgs {
   height: 85%;
 }

@@ -8,11 +8,17 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      started: false
+      started: false,
+      channel: ""
     }
-
+    this.setChannel = this.setChannel.bind(this);
     this.startSession = this.startSession.bind(this);
     this.stopSession = this.stopSession.bind(this);
+  }
+
+  setChannel(chan) {
+    console.log("Setting channel to " + chan);
+    this.setState({channel: chan})
   }
 
   startSession() {
@@ -31,20 +37,21 @@ class App extends React.Component {
         <div className="row">
           <div className="col" >
             <Chat
+              setChannel={this.setChannel}
               startMethod={this.startSession}
               stopMethod={this.stopSession}
             />
           </div>
 
-          
+            {this.state.channel !== "" ?
             <div className="col">
-            {this.state.started ? 
+              {this.state.started ? 
               <VideoApp 
                 api_key={this.props.apiKey}
                 session_id={this.props.sessionId}
                 token={this.props.token}
-              />: null}
-            </div>
+              /> : null }
+            </div>: null}
         </div>
       </div>
     );
