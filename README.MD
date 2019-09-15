@@ -20,4 +20,4 @@ To tackle this issue, we have launched Health In A Cloud: A web app that leverag
 
 ## Project Structure ##
     - Client-side/ --> Client sockets 
-    - Heroku (on Heroku Branch) --> WebServer with request end points
+    - Heroku/ (on Heroku Branch) --> WebServer with request end points
