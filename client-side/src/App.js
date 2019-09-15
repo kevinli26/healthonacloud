@@ -60,13 +60,26 @@ class App extends React.Component {
     }
   }
   
+  customStyles = {
+    content : {
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)'
+    }
+  };
+
   render(){
     return(
       <div className="container">
         {/* <Modal
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.closeModal}
+          style={this.customStyles}
           contentLabel="Log in Modal"
+          shouldCloseOnOverlayClick={false}
         >
           <div className='row'>
             <label className="col-3">Username:</label>
@@ -74,10 +87,11 @@ class App extends React.Component {
           </div>
           <div className='row'>
             <label className="col-3">Password:</label>
-            <input className="col-9" value={this.state.pw} onChange={(e) => {this.setState({pw: e.target.value})}}></input>
+            <input className="col-9" type="password" value={this.state.pw} onChange={(e) => {this.setState({pw: e.target.value})}}></input>
           </div>
-          <label value={this.state.error}></label>
-          <button onClick={this.login}>Log In</button>
+          <br />
+          <p>{this.state.error}</p>
+          <button className="btn btn-secondary" onClick={this.login}>Log In</button>
         </Modal> */}
         <div className="row">
           <div className="col" >
@@ -92,6 +106,7 @@ class App extends React.Component {
             <div className="col">
               {this.state.started ? 
               <VideoApp 
+                channel={this.state.channel}
                 api_key={this.props.apiKey}
                 session_id={this.props.sessionId}
                 token={this.props.token}

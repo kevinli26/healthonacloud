@@ -21,7 +21,7 @@ class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: "",
+      name: "Family Medicine",
       channel: "",
       recognizer: null,
       text: "",
@@ -35,8 +35,6 @@ class Chat extends React.Component {
       sentiment: null,
       microphoneState: true
     }
-
-
 
     this.endChat = this.endChat.bind(this);
   }
@@ -79,7 +77,7 @@ class Chat extends React.Component {
   nameUpdate = (e) => {
     this.setState({
       name: e.target.value
-    });
+    }, () => {console.log(this.state.name)});
   }
 
   analyzeSentiment(data) {
@@ -260,15 +258,11 @@ class Chat extends React.Component {
       this.setState({sentiment:['none']});
       console.log(err);
     });
-
-   
-
   }
 
   back = (e) => {
-    this.setState({
-      channel: ""
-    })
+    this.props.setChannel("");
+    this.setState({channel: ""})
   }
 
   microphoneState = (e) => {
@@ -282,10 +276,18 @@ class Chat extends React.Component {
     return (
       this.state.channel === "" ? (
           <div align="center" style={{"justifyContent": "center", "alignItems": "center"}}>
-            <h1 className="display-4 center">What channel to join?</h1>
-            <input type="text" id="name" className="form-control" style={{"textAlign": "center"}} value={this.state.name} onChange={this.nameUpdate}/>
+            <h1 className="display-4 center">What kind of health services would you like today?</h1>
+            <div className="form-group">
+              <select className="form-control" value={this.state.name} onChange={this.nameUpdate}>
+                <option>Family Medicine</option>
+                <option>Physiotherapy</option>
+                <option>Psychology</option>
+                <option>Dermatology</option>
+                <option>Allergy and Immunology</option>
+              </select>
+            </div>
             <br/>
-            <button className="btn btn-primary" onClick={ () => {this.props.setChannel(this.state.name); this.setState({channel: this.state.name, name: "" })}}>Submit</button>
+            <button className="btn btn-primary" onClick={ () => {this.props.setChannel(this.state.name); this.setState({channel: this.state.name})}}>Submit</button>
           </div>       
       ) : (
       <div>     

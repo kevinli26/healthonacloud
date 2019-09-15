@@ -74,8 +74,8 @@ class VideoApp extends React.Component {
             <div>
                 <OTSession
                         apiKey={this.state.api_key}
-                        sessionId={this.state.session_id}
-                        token={this.state.token}
+                        sessionId={this.props.channel === "Family Medicine" ? this.state.session_id[0] : this.state.session_id[1]}
+                        token={this.props.channel === "Family Medicine" ? this.state.token[0] : this.state.token[1]}
                         eventHandlers={this.sessionEvents}
                         onError={this.onError}
                         > 
