@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import axios from 'axios';
-import RecogUI from './RecogUI';
+import RecogUIWrapper from './RecogUIWrapper';
 
 export default class OTSubscriber extends Component {
   constructor(props, context) {
@@ -76,7 +76,8 @@ export default class OTSubscriber extends Component {
             "height": rectHeight,
             "left": rectLeft,
             "top": rectTop,
-            "width": rectWidth
+            "width": rectWidth,
+            "imgData": imgData
           };
 
           peopleDict[personId] = singlePerson;
@@ -190,27 +191,13 @@ export default class OTSubscriber extends Component {
     }
   }
 
-  dStyle = {
-    height: '400px',
-    width: '600px',
-    'z-index': '49'
-  }
-
-  cStyle = {
-    position: 'relative',
-    top: '-400px',
-    'z-index': '50'
-  }
-
   render() {
     return (
-    
       <view>
         <div style={this.dStyle} ref={(node) => { this.node = node; }} />
-        <canvas id="c1" style={this.cStyle}></canvas>
 
         {this.state.people ? 
-          <RecogUI 
+          <RecogUIWrapper 
             people={this.state.people}
           />
         : null}

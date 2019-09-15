@@ -1,47 +1,49 @@
 import React, { Component } from 'react';
 import { Button, Card, Image } from 'semantic-ui-react';
+import Editable from "react-editable-title";
+import './Styles.css';
 
 class RecogUI extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            title: "Patient",
+            imgData: "data:image/png;base64," + this.props.person.imgData,
+            left: this.props.person.left,
+            top: this.props.person.top,
+            height: this.props.person.height,
+            width: this.props.person.width,
+        }
     }
+
+    handleTitleChange = (data) => {
+        this.setState({
+            title: data
+        });
+    }
+
     render() {
         return (
-            <div>
-                {Object.entries(this.props.people).map(([key, value]) => {
-                    return (
-                        <Card>
-                            <Card.Content>
-                                {key == "Bill" ? 
-                                    <Image 
-                                        floated='right'
-                                        size='mini'
-                                        src='https://i.imgur.com/G7i06Fh.jpg'
-                                    />
-                                : key == "Michael" ? 
-                                    <Image 
-                                        floated='right'
-                                        size='mini'
-                                        src='https://i.imgur.com/Z0UIKCp.jpg'
-                                    />
-                                : null}
-                                <Card.Header>{key}</Card.Header>
-                                <Card.Meta>Meta</Card.Meta>
-                                <Card.Description>Description</Card.Description>
-                            </Card.Content>
-                        </Card>
-                        
-
-                        // <div>
-                        //     <b>{key}:</b>
-                        //     {Object.entries(this.props.people[key]).map(([innerKey, innerValue]) => {
-                        //         return <li>
-                        //             <b>{innerKey}: </b> {innerValue}
-                        //         </li>
-                        //     })}   
-                        // </div>
-                    )
-                })}
+            <div className="Card">
+                <Card>
+                    <Card.Content>
+                    <Image
+                        floated='right'
+                        size='mini'
+                        src={this.state.imgData}
+                    />
+                        <Card.Header>
+                            <Editable
+                                editControls
+                                contentRefs={this.handleTitleChange.bind(this)}
+                                name="Patient"
+                            />
+                        </Card.Header>
+                        <Card.Meta>Blur: {this.props.person.blur}, Noise: {this.props.person.noise}</Card.Meta>
+                        <Card.Description>{this.state.title} is a {this.props.person.age} year old {this.props.person.gender}, and is feeling {this.props.person.emotion}.</Card.Description>
+                    </Card.Content>
+                </Card>
             </div>
         );
     }

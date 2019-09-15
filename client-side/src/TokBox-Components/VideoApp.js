@@ -79,6 +79,7 @@ class VideoApp extends React.Component {
                         eventHandlers={this.sessionEvents}
                         onError={this.onError}
                         > 
+                        <ConnectionStatus connected={this.state.connected} /> 
                         <div>
                             <div className="row">
                                 <div className="col-6">
@@ -92,7 +93,6 @@ class VideoApp extends React.Component {
                             </div>
                         </div>
                         {this.state.error ? <div id="error">{this.state.error}</div> : null}  
-                        <ConnectionStatus connected={this.state.connected} /> 
                 </OTSession>
             </div>
         );

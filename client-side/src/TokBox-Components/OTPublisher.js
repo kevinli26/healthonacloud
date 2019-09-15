@@ -409,9 +409,9 @@ export default class OTPublisher extends Component {
 
   render() {
     return (
-      <view>
+      <div>
         <div ref={(node) => { this.node = node; }} />
-      </view>
+      </div>
     
     )
   }
