@@ -1,13 +1,14 @@
 import React from 'react';
 import './App.css';
-import CanvasDraw from "react-canvas-draw";
 import socketIOClient from "socket.io-client";
-import { throws } from 'assert';
+// import { throws } from 'assert';
 // RCE CSS
 import 'react-chat-elements/dist/main.css';
 // MessageBox component
 import { MessageBox } from 'react-chat-elements';
 import { SystemMessage } from 'react-chat-elements'
+import { FaMicrophone } from 'react-icons/fa';
+import { FaMicrophoneSlash } from 'react-icons/fa';
 import axios from 'axios';
 
 let moment = require('moment');
@@ -30,6 +31,7 @@ class Chat extends React.Component {
       endSession: false,
       summary: null,
       sentiment: null,
+      microphoneState: true
     }
     this.endChat = this.endChat.bind(this);
   }
@@ -113,18 +115,20 @@ class Chat extends React.Component {
   }
 
   recognized = (s,e) => {
-    let str = e.result.text.trim();
-    if (str !== "") {
-      let temp = this.state.messages;
-      let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
-      temp.push(entry)
-      this.setState({messages: temp})
-      let message  = {
-        text: str,
-        channel: this.state.channel,
+    if (this.setState.microphoneState) {
+      let str = e.result.text.trim();
+      if (str !== "") {
+        let temp = this.state.messages;
+        let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
+        temp.push(entry)
+        this.setState({messages: temp})
+        let message  = {
+          text: str,
+          channel: this.state.channel,
+        }
+        this.state.socket.emit('clientMessage', message);
+        console.log(str);
       }
-      this.state.socket.emit('clientMessage', message);
-      console.log(str);
     }
   }
 
@@ -229,14 +233,14 @@ class Chat extends React.Component {
     ]).then(axios.spread((keyPhrasesRes, sentimentRes) => {
         let temp = keyPhrasesRes.data.documents;
         let summarized = [];
-        temp.map( entry => {
+        temp.forEach( entry => {
           entry = entry.keyPhrases;
           summarized.push(entry);
         });
 
         let temp2 = sentimentRes.data.documents;
         let sentiments = [];
-        temp2.map( entry => {
+        temp2.forEach( entry => {
           entry = entry.score;
           sentiments.push(entry);
         });
@@ -250,15 +254,28 @@ class Chat extends React.Component {
     });
   }
 
+  back = (e) => {
+    this.setState({
+      channel: null
+    })
+  }
+
+  microphoneState = (e) => {
+    let state = !this.state.microphoneState;
+    this.setState({
+      microphoneState: state
+    })
+  }
+
   render() {
     return (
       this.state.channel === null ? (
-        <div>
-           <h1>What channel to join?</h1>
-           <input type="text" id="name" className="form-control" value={this.state.name} onChange={this.nameUpdate}/>
-            <button onClick={ () => {this.setState({channel: this.state.name })}}>submit</button>
-        </div>
-       
+          <div align="center" style={{"justify-content": "center", "align-items": "center"}}>
+            <h1 className="display-4 center">What channel to join?</h1>
+            <input type="text" id="name" className="form-control" style={{"text-align": "center"}} value={this.state.name} onChange={this.nameUpdate}/>
+            <br/>
+            <button className="btn btn-primary" onClick={ () => {this.setState({channel: this.state.name, name: "" })}}>Submit</button>
+          </div>       
       ) : (
       <div>     
         {this.state.summary != null && this.state.sentiment != null ? (
@@ -271,8 +288,13 @@ class Chat extends React.Component {
         ) : 
         <div>
           <div className="chat">
+              <div className="container">
+                <div className="row">
+                  <button className="btn btn-primary" onClick={this.back} disabled={!this.state.stopped}>Back</button>
+                  <h1 style={{"margin-left": '1rem'}}>{this.state.channel} Channel</h1>
+                </div>
+              </div>
               <div className="msgs">
-                <h1>You are in channel: {this.state.channel}</h1>
                 <ul id="messages">
                     {this.state.messages.map((msg, index) => {
                       return (
@@ -309,7 +331,10 @@ class Chat extends React.Component {
                 </ul>
               </div>
               <div class="input-group mb-3 input">
-                <input type="text" id="msg" className="form-control" value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
+              <div class="input-group-append">
+                  <button id="send" type="button" className="btn btn-secondary" onClick={this.microphoneState}>{this.state.microphoneState !== true ? <FaMicrophone /> : <FaMicrophoneSlash />}</button>
+                </div>
+                <input type="text" id="msg" className="form-control" style={{"text-align": "center"}} value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
                 <div class="input-group-append">
                   <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
                 </div>

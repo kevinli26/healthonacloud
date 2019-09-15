@@ -65,7 +65,7 @@ class VideoApp extends React.Component {
     }
 
     style = {
-        'width': "100%",
+        'width': "400px",
         'height': "500px"
     }
 
@@ -79,10 +79,18 @@ class VideoApp extends React.Component {
                         eventHandlers={this.sessionEvents}
                         onError={this.onError}
                         > 
-                        <OTPublisher properties={this.style}/>    
-                        <OTStreams>
-                            <OTSubscriberWrapper />
-                        </OTStreams>
+                        <div>
+                            <div className="row">
+                                <div className="col-6">
+                                    <OTPublisher properties={this.style}/> 
+                                </div>
+                                <div className="col-6">
+                                    <OTStreams>
+                                        <OTSubscriberWrapper />
+                                    </OTStreams>
+                                </div>
+                            </div>
+                        </div>
                         {this.state.error ? <div id="error">{this.state.error}</div> : null}  
                         <ConnectionStatus connected={this.state.connected} /> 
                 </OTSession>

@@ -1,6 +1,5 @@
 import React from 'react';
 import OTSubscriber from './OTSubscriber';
-import CheckBox from './CheckBox';
 import '../App.css';
 
 class Subscriber extends React.Component {
@@ -32,20 +31,11 @@ class Subscriber extends React.Component {
                 <OTSubscriber
                     properties={{
                         subscribeToAudio: this.state.audio,
-                        subscribeToVideo: this.state.video
+                        subscribeToVideo: this.state.video,
+                        height: "500px",
+                        width: "400px"
                     }}
                     onError={this.onError}
-                />
-
-                <CheckBox
-                    label="Subscribe to Audio"
-                    initialChecked={this.state.audio}
-                    onChange={this.setAudio}
-                />
-                <CheckBox
-                    label="Subscribe to Video"
-                    initialChecked={this.state.video}
-                    onChange={this.setVideo}
                 />
             </div>
         );

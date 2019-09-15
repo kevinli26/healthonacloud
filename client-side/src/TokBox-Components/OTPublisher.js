@@ -27,9 +27,9 @@ export default class OTPublisher extends Component {
     this.createPublisher();
 
     try {
-      this.state.timer = setInterval( async () => {
+      this.setState({timer: setInterval( async () => {
         this.sendImgBinary();
-      }, 30000);
+      }, 30000)});
     } catch(e) {
       console.log(e);
     }
@@ -49,7 +49,7 @@ export default class OTPublisher extends Component {
       }).then((res) => {
         var peopleDict = {};
         var response = res.data;
-        for (var res in response) {
+        for (var resu in response) {
           var responseData = response[res].faceAttributes;
 
           var maxProp = null;
@@ -57,13 +57,13 @@ export default class OTPublisher extends Component {
           var emotions = responseData.emotion;
           for (var prop in emotions) {
             var value = emotions[prop];
-            if (value > maxValue && prop != "neutral") {
+            if (value > maxValue && prop !== "neutral") {
               maxProp = prop;
               maxValue = value;
             }
           }
 
-          var personId = response[res].faceId;
+          var personId = response[resu].faceId;
           var singlePerson = {
             "age": responseData.age,
             "blur": responseData.blur.blurLevel,

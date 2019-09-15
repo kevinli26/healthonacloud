@@ -29,24 +29,22 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="row">
-          <div className="col">
+          <div className="col" >
             <Chat
               startMethod={this.startSession}
               stopMethod={this.stopSession}
             />
           </div>
 
-          {this.state.started ? 
+          
             <div className="col">
+            {this.state.started ? 
               <VideoApp 
                 api_key={this.props.apiKey}
                 session_id={this.props.sessionId}
                 token={this.props.token}
-              />
+              />: null}
             </div>
-            : null}
-
-          
         </div>
       </div>
     );
