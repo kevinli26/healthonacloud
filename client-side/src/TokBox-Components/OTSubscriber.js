@@ -40,7 +40,7 @@ export default class OTSubscriber extends Component {
       axios.post(url, img, {
         headers: {
           'Content-Type': 'application/octet-stream',
-          'Ocp-Apim-Subscription-Key': '1f4e3409461743b7ae7136039bac1d93'
+          'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
         }
       }).then((res) => {
         var peopleDict = {};
