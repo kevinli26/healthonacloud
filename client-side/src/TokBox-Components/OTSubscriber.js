@@ -25,7 +25,7 @@ export default class OTSubscriber extends Component {
     try {
       this.setState({ timer: setInterval( async () => {
         this.sendImgBinary();
-      }, 30000)});
+      }, 20000)});
     } catch(e) {
       console.log(e);
     }
