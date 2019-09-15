@@ -10,13 +10,18 @@ class App extends React.Component {
     this.state = {
       started: false
     }
+
+    this.startSession = this.startSession.bind(this);
+    this.stopSession = this.stopSession.bind(this);
   }
 
   startSession() {
+    console.log("Session Started!");
     this.setState({ started: true });
   }
 
   stopSession() {
+    console.log("Session Ended!")
     this.setState({ started: false });
   }
   
@@ -25,15 +30,23 @@ class App extends React.Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <Chat/>
-          </div>
-          <div className="col">
-            <VideoApp 
-              api_key={this.props.apiKey}
-              session_id={this.props.sessionId}
-              token={this.props.token}
+            <Chat
+              startMethod={this.startSession}
+              stopMethod={this.stopSession}
             />
           </div>
+
+          {this.state.started ? 
+            <div className="col">
+              <VideoApp 
+                api_key={this.props.apiKey}
+                session_id={this.props.sessionId}
+                token={this.props.token}
+              />
+            </div>
+            : null}
+
+          
         </div>
       </div>
     );

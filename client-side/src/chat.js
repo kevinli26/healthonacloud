@@ -75,6 +75,8 @@ class Chat extends React.Component {
     speechConfig.speechRecognitionLanguage = "en-US";
     var audioConfig  = sdk.AudioConfig.fromDefaultMicrophoneInput();
     var recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+
+    this.props.startMethod();
     
     recognizer.recognized = this.recognized
     this.setState({
@@ -163,6 +165,8 @@ class Chat extends React.Component {
   }
 
   endChat(){
+    this.props.stopMethod();
+
     axios.all([
       axios({
         method: "POST",
