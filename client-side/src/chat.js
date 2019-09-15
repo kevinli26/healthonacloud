@@ -7,6 +7,7 @@ import { throws } from 'assert';
 import 'react-chat-elements/dist/main.css';
 // MessageBox component
 import { MessageBox } from 'react-chat-elements';
+import { SystemMessage } from 'react-chat-elements'
 import axios from 'axios';
 
 let moment = require('moment');
@@ -17,6 +18,8 @@ class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
+      name: null,
+      channel: null,
       recognizer: null,
       text: "",
       stopped: true,
@@ -36,16 +39,39 @@ class Chat extends React.Component {
     let socket = socketIOClient(endpoint);
     this.setState({socket: socket});
     socket.on('textMessage', (msg) => {
-      let temp = this.state.messages;
-      let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg,  "time": moment().format('LT') };
-      temp.push(entry)
-      this.setState({messages: temp})
+
+      // alert(msg.channel);
+      if (msg.channel === this.state.channel) {
+        let temp = this.state.messages;
+        let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg.text,  "time": moment().format('LT') };
+        let dataToAnalyze = { "id": 1, "language": "en", "text": msg.text};
+        this.analyzeSentiment(dataToAnalyze);
+        temp.push(entry)
+        this.setState({messages: temp})
+      }
+
+      else if (msg.channel === "emergency") {
+        let temp = this.state.messages;
+        let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg.text,  "time": moment().format('LT') };
+        let dataToAnalyze = { "id": 1, "language": "en", "text": msg.text};
+        this.analyzeSentiment(dataToAnalyze);
+        temp.push(entry)
+        this.setState({messages: temp})
+      }
+      
+
     });
   }
 
   textUpdate = (e) => {
     this.setState({
       text: e.target.value
+    });
+  }
+
+  nameUpdate = (e) => {
+    this.setState({
+      name: e.target.value
     });
   }
 
@@ -93,7 +119,11 @@ class Chat extends React.Component {
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
       temp.push(entry)
       this.setState({messages: temp})
-      this.state.socket.emit('clientMessage', str);
+      let message  = {
+        text: str,
+        channel: this.state.channel,
+      }
+      this.state.socket.emit('clientMessage', message);
       console.log(str);
     }
   }
@@ -148,7 +178,11 @@ class Chat extends React.Component {
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": this.state.text, "time": moment().format('LT')};
       temp.push(entry)
       this.setState({messages: temp, text:""})
-      this.state.socket.emit('clientMessage', this.state.text);
+      let message  = {
+        text: this.state.text,
+        channel: this.state.channel,
+      }
+      this.state.socket.emit('clientMessage', message);
     }
   }
 
@@ -159,7 +193,11 @@ class Chat extends React.Component {
         let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": this.state.text, "time": moment().format('LT')};
         temp.push(entry)
         this.setState({messages: temp, text:""})
-        this.state.socket.emit('clientMessage', this.state.text);
+        let message  = {
+          text: this.state.text,
+          channel: this.state.channel,
+        }
+        this.state.socket.emit('clientMessage', message);
       }
     }
   }
@@ -214,6 +252,14 @@ class Chat extends React.Component {
 
   render() {
     return (
+      this.state.channel === null ? (
+        <div>
+           <h1>What channel to join?</h1>
+           <input type="text" id="name" className="form-control" value={this.state.name} onChange={this.nameUpdate}/>
+            <button onClick={ () => {this.setState({channel: this.state.name })}}>submit</button>
+        </div>
+       
+      ) : (
       <div>     
         {this.state.summary != null && this.state.sentiment != null ? (
           <div>
@@ -226,22 +272,30 @@ class Chat extends React.Component {
         <div>
           <div className="chat">
               <div className="msgs">
+                <h1>You are in channel: {this.state.channel}</h1>
                 <ul id="messages">
                     {this.state.messages.map((msg, index) => {
                       return (
                           msg['source'] === "received" ? 
-                              // <li>{msg['source']+ " : "+msg['text']}</li>
-                              //message I received
-                              <MessageBox
-                                  position={'left'}
-                                  type={'text'}
-                                  text={msg['source'] + " : " + msg['text']}
-                                  dateString={
-                                      msg['time']
-                                  }
-                              />
+                              <span>
+                                  {msg['text'] === "An anonymous emergency contact has been submitted." ?
+                                  ( 
+                                    <SystemMessage
+                                      text={msg['text']}
+                                    />
+                                    ): (  <MessageBox
+                                    position={'left'}
+                                    type={'text'}
+                                    text={msg['source'] + " : " + msg['text']}
+                                    dateString={
+                                        msg['time']
+                                    }
+                                />)}
+                                
+                              </span>
+                           
                                   :
-                              // <li>{msg['source']+" : "+msg['text']} </li>
+                            
                               <MessageBox
                                   position={'right'}
                                   type={'text'}
@@ -262,13 +316,24 @@ class Chat extends React.Component {
               </div>
           </div>
           <div>
+
             <button onClick={ () => {this.endChat();}}>End Session</button>
+
+            <button onClick={ () => {
+               let message  = {
+                text: "An anonymous emergency contact has been submitted.",
+                channel: "emergency",
+              }
+              this.state.socket.emit('clientMessage', message);
+              alert("you have submitted an emergency alert");
+            }}>Emergency Contact</button>
+
             <br />
             <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
             <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
           </div>
         </div>}
-    </div> )
+    </div> ))
   }
 }
 
