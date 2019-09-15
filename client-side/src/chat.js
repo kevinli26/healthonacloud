@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import socketIOClient from "socket.io-client";
+import Highlighter from "react-highlight-words";
 // import { throws } from 'assert';
 // RCE CSS
 import 'react-chat-elements/dist/main.css';
@@ -237,11 +238,16 @@ class Chat extends React.Component {
       })
     ]).then(axios.spread((keyPhrasesRes, sentimentRes) => {
         let temp = keyPhrasesRes.data.documents;
+        console.log("DATA: " + temp);
         let summarized = [];
         temp.forEach( entry => {
           entry = entry.keyPhrases;
+          if (typeof(entry) == 'string'){
+            entry = [entry]
+          }
           summarized.push(entry);
         });
+        console.log("summary: " + summarized)
 
         let temp2 = sentimentRes.data.documents;
         let sentiments = [];
@@ -292,33 +298,35 @@ class Chat extends React.Component {
       ) : (
       <div>     
         {this.state.summary != null && this.state.sentiment != null ? (
-          <div>
-            <h1>ENDED</h1>
+          <div className="row">
+            <div className="col">
+            <h1>Medical Dialogue Summary:</h1>
+              {this.state.messages.map((x, index) => {
+                return (x.source === "received" ? 
+                <div>
+                <Highlighter
+                  highlightClassName="none"
+                  searchWords={this.state.summary[index] ? this.state.summary[index] : [""]}
+                  autoEscape={true}
+                  textToHighlight={"Other: " + x.text}/>
+                  <br />
+                </div>  :
+                <div>
+                <Highlighter
+                  highlightClassName="none"
+                  searchWords={this.state.summary[index] ? this.state.summary[index] : [""]}
+                  autoEscape={true}
+                  textToHighlight={"You: " + x.text}/>
+                  <br />
+                </div>)
+              })}
             <ul>
-            {this.state.summary.map( x => {
-              if(x.length > 1 && x !== 'none') {
-              x.map( y => {
-                  if(y != 0){
-                    return (<li>{y}</li>);
-                  }
-                })
-                
-                }
-              if(x != 0){
-                return(<li>{x}</li>);
-              }
-            })}
             </ul>
-
-            <ul>
-            {this.state.sentiment.map( x => {
-              if(x != 0){
-                return(<li>{x}</li>);
-              }
-            })}
-            </ul>
+            </div>
+            <div className="col">
+              <button className="btn btn-lg btn-primary" onClick={()=>{this.setState({summary: null, sentiment: null, messages: [], microphoneState: true}); this.back()}}>Start a new session</button>
+            </div>
           </div>
-
         ) : 
         <div>
           <div className="chat">
