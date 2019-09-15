@@ -15,6 +15,7 @@
     "react-display-name": "^0.2.0",
     "react-dom": "^16.9.0",
     "react-icons": "^3.7.0",
+    "react-modal": "^3.10.1",
     "react-scripts": "^3.1.1",
     "scriptjs": "^2.5.8",
     "socket.io-client": "^2.2.0",
