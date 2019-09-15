@@ -1,4 +1,4 @@
-import React, { Children, cloneElement } from 'react';
+import React, { Children } from 'react';
 import PropTypes from 'prop-types';
 import OTSubscriberContext from './OTSubscriberContext';
 
@@ -15,7 +15,7 @@ export default function OTStreams(props, context) {
   const childrenWithContextWrapper = Array.isArray(streams)
     ? streams.map(stream => (child
       ? <OTSubscriberContext stream={stream} key={stream.id} >
-        { cloneElement(child) }
+        { child }
       </OTSubscriberContext>
       : child))
     : null;

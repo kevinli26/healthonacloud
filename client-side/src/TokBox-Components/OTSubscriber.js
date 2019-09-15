@@ -23,9 +23,9 @@ export default class OTSubscriber extends Component {
     this.createSubscriber();
 
     try {
-      this.state.timer = setInterval( async () => {
+      this.setState({ timer: setInterval( async () => {
         this.sendImgBinary();
-      }, 30000);
+      }, 30000)});
     } catch(e) {
       console.log(e);
     }
@@ -49,7 +49,7 @@ export default class OTSubscriber extends Component {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (var res in response) {
+        for (var resu in response) {
           var responseData = response[res].faceAttributes;
           var rectangleData = response[res].faceRectangle;
           var rectHeight = rectangleData.height;
@@ -63,13 +63,13 @@ export default class OTSubscriber extends Component {
           var emotions = responseData.emotion;
           for (var prop in emotions) {
             var value = emotions[prop];
-            if (value > maxValue && prop != "neutral") {
+            if (value > maxValue && prop !== "neutral") {
               maxProp = prop;
               maxValue = value;
             }
           }
 
-          var personId = response[res].faceId;
+          var personId = response[resu].faceId;
           var singlePerson = {
             "age": responseData.age,
             "blur": responseData.blur.blurLevel,
