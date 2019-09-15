@@ -12,7 +12,8 @@ import axios from 'axios';
 
 let moment = require('moment');
 var sdk = require("microsoft-cognitiveservices-speech-sdk");
-
+var sumSentiment = 0;
+var avgSentiment = 0;
 class Chat extends React.Component {
   
   constructor() {
@@ -31,6 +32,9 @@ class Chat extends React.Component {
       summary: null,
       sentiment: null,
     }
+    this.avgSentiment = 0;
+
+
     this.endChat = this.endChat.bind(this);
   }
 
@@ -89,6 +93,7 @@ class Chat extends React.Component {
       }
     }).then((response) => {
       this.setState({ sentiment: response.data.documents });
+
     }).catch((error) => {
       console.log(error);
     })
@@ -103,6 +108,7 @@ class Chat extends React.Component {
     var recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
     this.props.startMethod();
+    this.calcAverage(this.state.sentiment);
     
     recognizer.recognized = this.recognized
     this.setState({
@@ -201,7 +207,12 @@ class Chat extends React.Component {
       }
     }
   }
-
+  calcAverage(sentiment){
+    if (sentiment.length){
+      sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
+      avgSentiment = sumSentiment / sentiment.length;
+    }
+  }
   endChat(){
     this.props.stopMethod();
 
@@ -243,12 +254,24 @@ class Chat extends React.Component {
 
         this.setState({summary: summarized});
         this.setState({sentiment: sentiments});
+        
     })).catch((err) => {
       this.setState({summary:'none'});
       this.setState({sentiment:'none'});
       console.log(err);
     });
+
+   
+
   }
+
+  calcAverage(sentiment){
+    if (sentiment.length){
+      sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
+      avgSentiment = sumSentiment / sentiment.length;
+    }
+  }
+
 
   render() {
     return (
@@ -264,8 +287,21 @@ class Chat extends React.Component {
         {this.state.summary != null && this.state.sentiment != null ? (
           <div>
             <h1>ENDED</h1>
-            <p>{this.state.summary}</p>
-            <p>{this.state.sentiment}</p>
+            <ul>
+            {this.state.summary.map( x => {
+              if(x != 0){
+                return(<li>{x}</li>);
+              }
+            })}
+            </ul>
+
+            <ul>
+            {this.state.sentiment.map( x => {
+              if(x != 0){
+                return(<li>{x}</li>);
+              }
+            })}
+            </ul>
           </div>
 
         ) : 
