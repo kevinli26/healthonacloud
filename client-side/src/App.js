@@ -106,6 +106,7 @@ class App extends React.Component {
             <div className="col">
               {this.state.started ? 
               <VideoApp 
+                channel={this.state.channel}
                 api_key={this.props.apiKey}
                 session_id={this.props.sessionId}
                 token={this.props.token}

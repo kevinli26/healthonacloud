@@ -36,8 +36,6 @@ class Chat extends React.Component {
       microphoneState: true
     }
 
-
-
     this.endChat = this.endChat.bind(this);
   }
 
