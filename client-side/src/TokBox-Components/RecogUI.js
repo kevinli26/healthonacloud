@@ -7,7 +7,6 @@ class RecogUI extends Component {
     render() {
         return (
             <div>
-                <h1>Hi!</h1>
                 {Object.entries(this.props.people).map(([key, value]) => {
                     return (
                         <div>

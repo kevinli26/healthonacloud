@@ -38,8 +38,6 @@ class Chat extends React.Component {
     socket.on('textMessage', (msg) => {
       let temp = this.state.messages;
       let entry = { "id": temp.length + 1, "language": "en", "source": "received", "text": msg,  "time": moment().format('LT') };
-      let dataToAnalyze = { "id": 1, "language": "en", "text": msg };
-      this.analyzeSentiment(dataToAnalyze);
       temp.push(entry)
       this.setState({messages: temp})
     });
@@ -54,7 +52,7 @@ class Chat extends React.Component {
   analyzeSentiment(data) {
     var url = 'https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/sentiment';
     var encoded = {
-      documents: [data],
+      documents: data,
     }
 
     axios.post(url, encoded, {
@@ -64,8 +62,7 @@ class Chat extends React.Component {
         'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a'
       }
     }).then((response) => {
-      var res = response.data.documents[0];
-      console.log("Sentiment score: " + res.score);
+      this.setState({ sentiment: response.data.documents });
     }).catch((error) => {
       console.log(error);
     })
@@ -85,10 +82,6 @@ class Chat extends React.Component {
       stopped: false
     });
     recognizer.startContinuousRecognitionAsync(); 
-
-    // DEBUG
-    console.log(this.state.messages);
-    console.log(this.state.text);
   }
 
   recognized = (s,e) => {
@@ -96,9 +89,6 @@ class Chat extends React.Component {
     if (str !== "") {
       let temp = this.state.messages;
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": str,  "time": moment().format('LT') };
-      let dataToAnalyze = { "id": 1, "language": "en", "text": str };
-      this.analyzeSentiment(dataToAnalyze);
-
       temp.push(entry)
       this.setState({messages: temp})
       this.state.socket.emit('clientMessage', str);
@@ -154,9 +144,6 @@ class Chat extends React.Component {
     if (this.state.text.trim() !== ""){
       let temp = this.state.messages;
       let entry = {"id": temp.length + 1, "language": "en", "source": "sent", "text": this.state.text, "time": moment().format('LT')};
-      let dataToAnalyze = { "id": 1, "language": "en", "text": this.state.text };
-      this.analyzeSentiment(dataToAnalyze);
-
       temp.push(entry)
       this.setState({messages: temp, text:""})
       this.state.socket.emit('clientMessage', this.state.text);
@@ -176,38 +163,59 @@ class Chat extends React.Component {
   }
 
   endChat(){
-    axios({
-      method: "POST",
-      url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
-      },
-      data: {documents: this.state.messages},
-    }).then( (apiRes) => {
-        let temp = apiRes.data.documents;
+    axios.all([
+      axios({
+        method: "POST",
+        url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
+        },
+        data: {documents: this.state.messages},
+      }),
+      axios({
+        method: "POST",
+        url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/sentiment",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
+        },
+        data: {documents: this.state.messages},
+      })
+    ]).then(axios.spread((keyPhrasesRes, sentimentRes) => {
+        let temp = keyPhrasesRes.data.documents;
         let summarized = [];
         temp.map( entry => {
           entry = entry.keyPhrases;
           summarized.push(entry);
         });
-        this.setState({summary: summarized})
-    }).catch( (err)=> {
-        console.log(err);
-        console.log('An error has occurred')
-        this.setState({summary: "nothing"})
+
+        let temp2 = sentimentRes.data.documents;
+        let sentiments = [];
+        temp2.map( entry => {
+          entry = entry.score;
+          sentiments.push(entry);
+        });
+
+        this.setState({summary: summarized});
+        this.setState({sentiment: sentiments});
+    })).catch((err) => {
+      this.setState({summary:'none'});
+      this.setState({sentiment:'none'});
+      console.log(err);
     });
-  
   }
 
   render() {
     return (
       <div>     
-        {this.state.summary != null ? (
+        {this.state.summary != null && this.state.sentiment != null ? (
           <div>
             <h1>ENDED</h1>
             <p>{this.state.summary}</p>
+            <p>{this.state.sentiment}</p>
           </div>
 
         ) : 
@@ -250,33 +258,7 @@ class Chat extends React.Component {
               </div>
           </div>
           <div>
-            <button onClick={ () => {
-              axios({
-                method: "POST",
-                url: "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.1/keyPhrases",
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Ocp-Apim-Subscription-Key': '4685b5d936f94879b6910e941f54a36a',
-                },
-                data: {documents: this.state.messages},
-              }).then( (apiRes) => {
-                  let temp = apiRes.data.documents;
-                  let summarized = [];
-                  temp.map( entry => {
-                    entry = entry.keyPhrases;
-                    summarized.push(entry);
-                  });
-                  console.log(summarized);
-                  this.setState({summary:summarized});
-
-              }).catch( (err)=> {
-                  this.setState({summary:'none'});
-                  console.log(err);
-                  console.log('An error has occurred')
-              });
-            }}>End Session</button>
-
+            <button onClick={ () => {this.endChat();}}>End Session</button>
             <br />
             <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
             <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
