@@ -9,19 +9,20 @@ import { MessageBox } from 'react-chat-elements';
 import { SystemMessage } from 'react-chat-elements'
 import { FaMicrophone } from 'react-icons/fa';
 import { FaMicrophoneSlash } from 'react-icons/fa';
+import { FaPhone } from 'react-icons/fa'
+import { FaPhoneSlash } from 'react-icons/fa'
+import { FaExclamationCircle } from 'react-icons/fa'
 import axios from 'axios';
 
 let moment = require('moment');
 var sdk = require("microsoft-cognitiveservices-speech-sdk");
-var sumSentiment = 0;
-var avgSentiment = 0;
 class Chat extends React.Component {
   
   constructor() {
     super();
     this.state = {
-      name: null,
-      channel: null,
+      name: "",
+      channel: "",
       recognizer: null,
       text: "",
       stopped: true,
@@ -34,7 +35,7 @@ class Chat extends React.Component {
       sentiment: null,
       microphoneState: true
     }
-    this.avgSentiment = 0;
+
 
 
     this.endChat = this.endChat.bind(this);
@@ -110,8 +111,7 @@ class Chat extends React.Component {
     var recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
     this.props.startMethod();
-    this.calcAverage(this.state.sentiment);
-    
+     
     recognizer.recognized = this.recognized
     this.setState({
       recognizer: recognizer,
@@ -121,7 +121,7 @@ class Chat extends React.Component {
   }
 
   recognized = (s,e) => {
-    if (this.setState.microphoneState) {
+    if (this.state.microphoneState) {
       let str = e.result.text.trim();
       if (str !== "") {
         let temp = this.state.messages;
@@ -138,13 +138,6 @@ class Chat extends React.Component {
     }
   }
 
-  stop = (e) => {
-    this.state.recognizer.stopContinuousRecognitionAsync();
-    this.setState({
-      stopped: true
-    });
-  }
-  
   canvasStyle = {
     border: '1px solid #000000'
   }
@@ -219,7 +212,10 @@ class Chat extends React.Component {
   }
   endChat(){
     this.props.stopMethod();
-
+    this.state.recognizer.stopContinuousRecognitionAsync();
+    this.setState({
+      stopped: true
+    });
     axios.all([
       axios({
         method: "POST",
@@ -278,7 +274,7 @@ class Chat extends React.Component {
 
   back = (e) => {
     this.setState({
-      channel: null
+      channel: ""
     })
   }
 
@@ -291,12 +287,12 @@ class Chat extends React.Component {
 
   render() {
     return (
-      this.state.channel === null ? (
-          <div align="center" style={{"justify-content": "center", "align-items": "center"}}>
+      this.state.channel === "" ? (
+          <div align="center" style={{"justifyContent": "center", "alignItems": "center"}}>
             <h1 className="display-4 center">What channel to join?</h1>
-            <input type="text" id="name" className="form-control" style={{"text-align": "center"}} value={this.state.name} onChange={this.nameUpdate}/>
+            <input type="text" id="name" className="form-control" style={{"textAlign": "center"}} value={this.state.name} onChange={this.nameUpdate}/>
             <br/>
-            <button className="btn btn-primary" onClick={ () => {this.setState({channel: this.state.name, name: "" })}}>Submit</button>
+            <button className="btn btn-primary" onClick={ () => {this.props.setChannel(this.state.name); this.setState({channel: this.state.name, name: "" })}}>Submit</button>
           </div>       
       ) : (
       <div>     
@@ -305,6 +301,14 @@ class Chat extends React.Component {
             <h1>ENDED</h1>
             <ul>
             {this.state.summary.map( x => {
+              if(x.length > 1) {
+              x.map( y => {
+                  if(y != 0){
+                    return (<li>{y}</li>);
+                  }
+                })
+                
+                }
               if(x != 0){
                 return(<li>{x}</li>);
               }
@@ -326,11 +330,12 @@ class Chat extends React.Component {
               <div className="container">
                 <div className="row">
                   <button className="btn btn-primary" onClick={this.back} disabled={!this.state.stopped}>Back</button>
-                  <h1 style={{"margin-left": '1rem'}}>{this.state.channel} Channel</h1>
+                  <h1 style={{"marginLeft": '1rem'}}>{this.state.channel} Channel</h1>
                 </div>
               </div>
               <div className="msgs">
                 <ul id="messages">
+                    {this.state.stopped ? <h4 style={{textAlign: "right"}}>Start a conversation with a doctor to get started!</h4> : <div>
                     {this.state.messages.map((msg, index) => {
                       return (
                           msg['source'] === "received" ? 
@@ -363,34 +368,30 @@ class Chat extends React.Component {
                               />  
                       );
                     })}
+                    </div>}
                 </ul>
               </div>
-              <div class="input-group mb-3 input">
-              <div class="input-group-append">
-                  <button id="send" type="button" className="btn btn-secondary" onClick={this.microphoneState}>{this.state.microphoneState !== true ? <FaMicrophone /> : <FaMicrophoneSlash />}</button>
+              <div className="input-group mb-3 input">
+              <div className="input-group-append">
+                  <button id="send" disabled={this.state.stopped} type="button" className="btn btn-secondary" onClick={this.microphoneState}>{this.state.microphoneState !== true ? <FaMicrophone /> : <FaMicrophoneSlash />}</button>
                 </div>
-                <input type="text" id="msg" className="form-control" style={{"text-align": "center"}} value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
-                <div class="input-group-append">
+                <input type="text" disabled={this.state.stopped} id="msg" className="form-control" style={{"textAlign": "right"}} value={this.state.text} onChange={this.textUpdate} onKeyPress={this.enterCheck}/>
+                <div className="input-group-append">
                   <button id="send" type="button" className="btn btn-secondary" onClick={this.send}>Send</button>
                 </div>
               </div>
           </div>
-          <div>
-
-            <button onClick={ () => {this.endChat();}}>End Session</button>
-
-            <button onClick={ () => {
+          <div style={{"textAlign": "right"}}>
+            <button className="btn btn-primary btn-lg btn-danger button-left-space" onClick={ () => {
                let message  = {
                 text: "An anonymous emergency contact has been submitted.",
                 channel: "emergency",
               }
               this.state.socket.emit('clientMessage', message);
               alert("you have submitted an emergency alert");
-            }}>Emergency Contact</button>
-
-            <br />
-            <button id="startRecognizeOnceAsyncButton" onClick={this.record} disabled={!this.state.stopped}>Start</button>
-            <button id="stopRecognizeOnceAsyncButton" onClick={this.stop} disabled={this.state.stopped}>Stop</button>
+            }}><h2><FaExclamationCircle/></h2></button>
+            <button className="btn btn-primary btn-lg button-left-space" disabled={this.state.stopped} onClick={ () => {this.endChat();}}><h2><FaPhoneSlash /></h2></button>
+            <button id="startRecognizeOnceAsyncButton" className="btn btn-primary btn-lg btn-success button-left-space" onClick={this.record} disabled={!this.state.stopped}><h2><FaPhone/></h2></button>
           </div>
         </div>}
     </div> ))
