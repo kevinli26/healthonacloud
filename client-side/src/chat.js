@@ -212,7 +212,7 @@ class Chat extends React.Component {
     }
   }
   calcAverage(sentiment){
-    if (sentiment.length){
+    if (sentiment && sentiment.length){
       sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
       avgSentiment = sumSentiment / sentiment.length;
     }
@@ -260,8 +260,8 @@ class Chat extends React.Component {
         this.setState({sentiment: sentiments});
         
     })).catch((err) => {
-      this.setState({summary:'none'});
-      this.setState({sentiment:'none'});
+      this.setState({summary:['none']});
+      this.setState({sentiment:['none']});
       console.log(err);
     });
 
@@ -270,14 +270,12 @@ class Chat extends React.Component {
   }
 
   calcAverage(sentiment){
-    if (sentiment.length){
+    if (sentiment && sentiment.length){
       sumSentiment  = sentiment.reduce(function(a, b) { return a + b; });
       avgSentiment = sumSentiment / sentiment.length;
     }
   }
 
-<<<<<<< HEAD
-=======
   back = (e) => {
     this.setState({
       channel: null
@@ -290,7 +288,6 @@ class Chat extends React.Component {
       microphoneState: state
     })
   }
->>>>>>> 6113177e8cd48d919e3d8c851306a198062b8bc9
 
   render() {
     return (

@@ -36,27 +36,23 @@ export default class OTSubscriber extends Component {
       var imgData = this.state.subscriber.getImgData();
       var img = this.base64ToArrayBuffer(imgData);
 
-      var url = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,smile,glasses,emotion,blur,exposure,noise&recognitionModel=recognition_01&returnRecognitionModel=true&detectionModel=detection_01"
+      var url = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,smile,emotion,blur,exposure,noise&recognitionModel=recognition_02&returnRecognitionModel=true&detectionModel=detection_01"
       axios.post(url, img, {
         headers: {
           'Content-Type': 'application/octet-stream',
-          'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
+          'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
         }
       }).then((res) => {
         var peopleDict = {};
         var response = res.data;
-        var canvas = document.getElementById("c1");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (var resu in response) {
+        for (var res in response) {
           var responseData = response[res].faceAttributes;
           var rectangleData = response[res].faceRectangle;
           var rectHeight = rectangleData.height;
           var rectLeft = rectangleData.left;
           var rectTop = rectangleData.top;
           var rectWidth = rectangleData.width;
-          ctx.strokeRect(rectLeft, rectTop, rectWidth, rectHeight);
 
           var maxProp = null;
           var maxValue = -1;
@@ -69,15 +65,18 @@ export default class OTSubscriber extends Component {
             }
           }
 
-          var personId = response[resu].faceId;
+          var personId = response[res].faceId;
           var singlePerson = {
             "age": responseData.age,
             "blur": responseData.blur.blurLevel,
             "emotion": maxProp,
-            "glasses": responseData.glasses,
             "gender": responseData.gender,
             "noise": responseData.noise.noiseLevel,
-            "smile": responseData.smile
+            "smile": responseData.smile,
+            "height": rectHeight,
+            "left": rectLeft,
+            "top": rectTop,
+            "width": rectWidth
           };
 
           peopleDict[personId] = singlePerson;
@@ -207,14 +206,14 @@ export default class OTSubscriber extends Component {
     return (
     
       <view>
+        <div style={this.dStyle} ref={(node) => { this.node = node; }} />
+        <canvas id="c1" style={this.cStyle}></canvas>
+
         {this.state.people ? 
           <RecogUI 
             people={this.state.people}
           />
         : null}
-
-        <div style={this.dStyle} ref={(node) => { this.node = node; }} />
-        <canvas id="c1" style={this.cStyle}></canvas>
       </view>
     
     )

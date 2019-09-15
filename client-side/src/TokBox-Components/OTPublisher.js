@@ -21,19 +21,19 @@ export default class OTPublisher extends Component {
 
     this.sendImgBinary = this.sendImgBinary.bind(this);
     this.base64ToArrayBuffer = this.base64ToArrayBuffer.bind(this);
-    this.detectBill = this.detectBill.bind(this);
+    // this.detectBill = this.detectBill.bind(this);
   }
 
   componentDidMount() {
     this.createPublisher();
 
-    try {
-      this.setState({timer: setInterval( async () => {
-        this.sendImgBinary();
-      }, 20000)});
-    } catch(e) {
-      console.log(e);
-    }
+    // try {
+    //   this.setState({timer: setInterval( async () => {
+    //     this.sendImgBinary();
+    //   }, 20000)});
+    // } catch(e) {
+    //   console.log(e);
+    // }
   }
 
   sendImgBinary() {
@@ -50,7 +50,7 @@ export default class OTPublisher extends Component {
       //     url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,smile,glasses,emotion,blur,exposure,noise&recognitionModel=recognition_02&returnRecognitionModel=true&detectionModel=detection_01",
       //     headers: {
       //       'Content-Type': 'application/octet-stream',
-      //       'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
+      //       'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
       //     },
       //     data: img,
       //   }),
@@ -59,7 +59,7 @@ export default class OTPublisher extends Component {
       //     url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/largepersongroups/healthonacloud/persons/89546fa2-a582-4db4-8698-9751a5df9bb7/persistedfaces?detectionModel=detection_02",
       //     headers: {
       //       'Content-Type': 'application/octet-stream',
-      //       'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
+      //       'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
       //     },
       //     data: img,
       //   })
@@ -96,7 +96,7 @@ export default class OTPublisher extends Component {
       //       url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
       //       headers: {
       //         'Content-Type': 'application/json',
-      //         'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
+      //         'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
       //       },
       //       data :{
       //         'faceId': personId,
@@ -136,116 +136,116 @@ export default class OTPublisher extends Component {
       // });
       
       
-      axios.post(url, img, {
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
-        }
-      }).then((res) => {
-        var peopleDict = {};
-        var response = res.data;
-        for (var resu in response) {
-          var responseData = response[res].faceAttributes;
+      // axios.post(url, img, {
+      //   headers: {
+      //     'Content-Type': 'application/octet-stream',
+      //     'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
+      //   }
+      // }).then((res) => {
+      //   var peopleDict = {};
+      //   var response = res.data;
+      //   for (var res in response) {
+      //     var responseData = response[res].faceAttributes;
 
-          var maxProp = null;
-          var maxValue = -1;
-          var emotions = responseData.emotion;
-          for (var prop in emotions) {
-            var value = emotions[prop];
-            if (value > maxValue && prop !== "neutral") {
-              maxProp = prop;
-              maxValue = value;
-            }
-          }
+      //     var maxProp = null;
+      //     var maxValue = -1;
+      //     var emotions = responseData.emotion;
+      //     for (var prop in emotions) {
+      //       var value = emotions[prop];
+      //       if (value > maxValue && prop !== "neutral") {
+      //         maxProp = prop;
+      //         maxValue = value;
+      //       }
+      //     }
 
-          var personId = response[resu].faceId;
-          var singlePerson = {
-            "age": responseData.age,
-            "blur": responseData.blur.blurLevel,
-            "emotion": maxProp,
-            "glasses": responseData.glasses,
-            "gender": responseData.gender,
-            "noise": responseData.noise.noiseLevel,
-            "smile": responseData.smile
-          };
+      //     var personId = response[res].faceId;
+      //     var singlePerson = {
+      //       "age": responseData.age,
+      //       "blur": responseData.blur.blurLevel,
+      //       "emotion": maxProp,
+      //       "glasses": responseData.glasses,
+      //       "gender": responseData.gender,
+      //       "noise": responseData.noise.noiseLevel,
+      //       "smile": responseData.smile
+      //     };
 
-          axios.all([
-            axios({
-              method: "POST",
-              url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
-              headers: {
-                'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
-              },
-              data :{
-                'faceId': personId,
-                'personId': '386e3644-e09b-4768-a361-f2a6d362b531',
-                'largePersonGroupId': 'healthonacloud'
-              },
-            }),
-            axios({
-              method: "POST",
-              url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
-              headers: {
-                'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
-              },
-              data :{
-                'faceId': personId,
-                'personId': '89546fa2-a582-4db4-8698-9751a5df9bb7',
-                'largePersonGroupId': 'healthonacloud'
-              },
-            })
-          ]).then(axios.spread((billRes, michRes) => {
-            if (billRes.data.isIdentical == true) {
-              peopleDict["Bill"] = singlePerson;
-              this.setState({people: peopleDict});
-            } else if (michRes.data.isIdentical == true) {
-              peopleDict["Michael"] = singlePerson;
-              this.setState({people: peopleDict});
-            } else {
-              peopleDict[personId] = singlePerson;
-              this.setState({people: peopleDict});
-            }
-          })).catch((err) => {
-            console.log(err);
-          })
+      //     axios.all([
+      //       axios({
+      //         method: "POST",
+      //         url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
+      //         headers: {
+      //           'Content-Type': 'application/json',
+      //           'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
+      //         },
+      //         data :{
+      //           'faceId': personId,
+      //           'personId': '386e3644-e09b-4768-a361-f2a6d362b531',
+      //           'largePersonGroupId': 'healthonacloud'
+      //         },
+      //       }),
+      //       axios({
+      //         method: "POST",
+      //         url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
+      //         headers: {
+      //           'Content-Type': 'application/json',
+      //           'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
+      //         },
+      //         data :{
+      //           'faceId': personId,
+      //           'personId': '89546fa2-a582-4db4-8698-9751a5df9bb7',
+      //           'largePersonGroupId': 'healthonacloud'
+      //         },
+      //       })
+      //     ]).then(axios.spread((billRes, michRes) => {
+      //       if (billRes.data.isIdentical == true) {
+      //         peopleDict["Bill"] = singlePerson;
+      //         this.setState({people: peopleDict});
+      //       } else if (michRes.data.isIdentical == true) {
+      //         peopleDict["Michael"] = singlePerson;
+      //         this.setState({people: peopleDict});
+      //       } else {
+      //         peopleDict[personId] = singlePerson;
+      //         this.setState({people: peopleDict});
+      //       }
+      //     })).catch((err) => {
+      //       console.log(err);
+      //     })
 
-        }
-      }).catch((error) => {
-        console.log(error);
-      });
+      //   }
+      // }).catch((error) => {
+      //   console.log(error);
+      // });
     } else {
       console.log("Publisher does not exist");
     }
   }
 
-  detectBill = (id) => {
-    axios({
-      method: "POST",
-      url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
-      headers: {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': 'caa86e5d4f954f038c9dbd4a5bce59e0'
-      },
-      data :{
-        'faceId': id,
-        'personId': '386e3644-e09b-4768-a361-f2a6d362b531',
-        'largePersonGroupId': 'healthonacloud'
-      },
-    }).then((res) => {
-      console.log(res);
-      console.log(res.data);
-      if (res.data.isIdentical == true) {
-        console.log("YES");
-        return true;
-      } else {
-        return false;
-      }
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
+  // detectBill = (id) => {
+  //   axios({
+  //     method: "POST",
+  //     url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify",
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Ocp-Apim-Subscription-Key': 'c2ee88fc1c884aa7b68bef241c730155'
+  //     },
+  //     data :{
+  //       'faceId': id,
+  //       'personId': '386e3644-e09b-4768-a361-f2a6d362b531',
+  //       'largePersonGroupId': 'healthonacloud'
+  //     },
+  //   }).then((res) => {
+  //     console.log(res);
+  //     console.log(res.data);
+  //     if (res.data.isIdentical == true) {
+  //       console.log("YES");
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   }).catch((err) => {
+  //     console.log(err);
+  //   })
+  // }
 
   base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
@@ -409,16 +409,8 @@ export default class OTPublisher extends Component {
 
   render() {
     return (
-    
       <view>
-        {this.state.people ? 
-          <RecogUI 
-            people={this.state.people}
-          />
-        : null}
-
         <div ref={(node) => { this.node = node; }} />
-        
       </view>
     
     )
