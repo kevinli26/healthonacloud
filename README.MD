@@ -1,6 +1,6 @@
 # Health on a cloud! Professional Medical Services at the touch of your finger tips. #
 
-## How to run:##
+## How to run: ##
     1. cd client-side
     2. npm install
     3. npm start
@@ -20,3 +20,5 @@
     * Deployed on Heroku
 
 ## Project Structure ##
+    * Client-side/ --> Client sockets 
+    * Heroku (on Heroku Branch) --> WebServer with request end points
