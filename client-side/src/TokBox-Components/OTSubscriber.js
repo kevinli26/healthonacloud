@@ -24,9 +24,8 @@ export default class OTSubscriber extends Component {
 
     try {
       this.state.timer = setInterval( async () => {
-        console.log("Timer tick")
         this.sendImgBinary();
-      }, 4000);
+      }, 30000);
     } catch(e) {
       console.log(e);
     }
@@ -36,7 +35,6 @@ export default class OTSubscriber extends Component {
     if (this.state.subscriber) {
       var imgData = this.state.subscriber.getImgData();
       var img = this.base64ToArrayBuffer(imgData);
-      console.log(img);
 
       var url = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,smile,glasses,emotion,blur,exposure,noise&recognitionModel=recognition_01&returnRecognitionModel=true&detectionModel=detection_01"
       axios.post(url, img, {
@@ -59,7 +57,6 @@ export default class OTSubscriber extends Component {
           var rectTop = rectangleData.top;
           var rectWidth = rectangleData.width;
           ctx.strokeRect(rectLeft, rectTop, rectWidth, rectHeight);
-          console.log(rectLeft + " " + rectTop + " " + rectWidth + " " + rectHeight);
 
           var maxProp = null;
           var maxValue = -1;
@@ -87,7 +84,6 @@ export default class OTSubscriber extends Component {
         }
         
         this.setState({people: peopleDict});
-        console.log(response[res]);
       }).catch((error) => {
         console.log(error);
       });
